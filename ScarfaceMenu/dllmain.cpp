@@ -40,7 +40,7 @@ int HookHash(char* input, char a2)
 			result = ((int(__cdecl*)(const char*, int))0x6DC190)(input,0);
 	}
 
-	fprintf(pFile, "%s |\t %s\n", input, ((char*(__cdecl*)(const char*))0x498A00)(input));
+	fprintf(pFile, "%s |\t %s\n", input, ((char*(__cdecl*)(int))0x498A00)(result));
 	fclose(pFile);
 
 	return result; 
@@ -54,6 +54,7 @@ BOOL WINAPI DllMain(HMODULE hMod, DWORD dwReason, LPVOID lpReserved)
 	{
 	case DLL_PROCESS_ATTACH:
 		Memory::VP::InjectHook(0x498B10, HookHash, PATCH_JUMP);
+		//MessageBoxA(0, ((char* (__cdecl*)(const char*))0x498A00)("footprintsize "), 0, 0);
 		DisableThreadLibraryCalls(hMod);
 		CreateThread(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(ImGuiInputWatcher), nullptr, 0, nullptr);
 		CreateThread(nullptr, 0, DirectXHookThread, hMod, 0, nullptr);
