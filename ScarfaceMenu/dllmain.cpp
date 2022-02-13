@@ -1,22 +1,68 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include "pch.h"
-#include <uti>
+#include "eDirectX9Hook.h"
+#include "utils/MemoryMgr.h"
+#include <iostream>
 
-extern "C"
+void ImGuiInputWatcher()
 {
-	__declspec(dllexport) void InitializeASI()
+	while (true)
 	{
-		// a rather weird way to check version but it works, right?
-		if (*(int*)0x4884AB == 0x009550E8)
+		if (eDirectX9Hook::ms_bInit)
 		{
-			Memory::VP::Patch<char>(0x7EC9C4, 0);		// 1.0
-			Memory::VP::Patch<char>(0x7EC9C5, 0);
-		}
-		else
-		{
-			Memory::VP::Patch<char>(0x7C1C54, 0);		// 1.0.2
-			Memory::VP::Patch<char>(0x7C1C55, 0);
+			ImGuiIO& io = ImGui::GetIO();
+			POINT mPos;
+			GetCursorPos(&mPos);
+			ScreenToClient(eDirectX9Hook::ms_hWindow, &mPos);
+			io.MousePos.x = mPos.x;
+			io.MousePos.y = mPos.y;
+			io.MouseDown[0] = (GetAsyncKeyState(VK_LBUTTON) & 0x8000) != 0;
+			io.MouseDown[1] = (GetAsyncKeyState(VK_RBUTTON) & 0x8000) != 0;
+			io.MouseDown[2] = (GetAsyncKeyState(VK_MBUTTON) & 0x8000) != 0;
 		}
 
+
+		Sleep(1);
 	}
 }
+
+int HookHash(char* input, char a2)
+{
+	FILE* pFile = fopen("hash_log.txt", "a+");
+
+	int result = ((int(__cdecl*)(const char*))0x498A90)(input);
+
+	if (!result)
+	{
+		if (a2)
+			result = ((int(__cdecl*)(const char*, int))0x6DC1E0)(input,0);
+		else
+			result = ((int(__cdecl*)(const char*, int))0x6DC190)(input,0);
+	}
+
+	fprintf(pFile, "%s |\t %s\n", input, ((char*(__cdecl*)(const char*))0x498A00)(input));
+	fclose(pFile);
+
+	return result; 
+}
+
+
+
+BOOL WINAPI DllMain(HMODULE hMod, DWORD dwReason, LPVOID lpReserved)
+{
+	switch (dwReason)
+	{
+	case DLL_PROCESS_ATTACH:
+		Memory::VP::InjectHook(0x498B10, HookHash, PATCH_JUMP);
+		DisableThreadLibraryCalls(hMod);
+		CreateThread(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(ImGuiInputWatcher), nullptr, 0, nullptr);
+		CreateThread(nullptr, 0, DirectXHookThread, hMod, 0, nullptr);
+
+		break;
+	case DLL_PROCESS_DETACH:
+		kiero::shutdown();
+		break;
+	}
+	return TRUE;
+}
+

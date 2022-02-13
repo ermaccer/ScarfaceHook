@@ -19,15 +19,12 @@ public:
 	static Reset    m_pReset;
 	static HWND ms_hWindow;
 	static WNDPROC ms_pWndProc;
-	static ImGuiStyle	ms_localStyleCopy;
 
 	static bool ms_bInit;
 	static bool ms_bShouldReloadFonts;
 
 	static void	   Init();
-	static void    SetImGuiStyle();
 	static void    InitImGui(LPDIRECT3DDEVICE9 pDevice);
-	static void	   ReloadImGuiFont();
 	static long __stdcall EndScene(LPDIRECT3DDEVICE9 pDevice);
 	static long __stdcall Reset(LPDIRECT3DDEVICE9 pDevice,D3DPRESENT_PARAMETERS *pPresentationParameters);
 	static LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
