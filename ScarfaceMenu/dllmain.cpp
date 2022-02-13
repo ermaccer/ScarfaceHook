@@ -54,7 +54,6 @@ BOOL WINAPI DllMain(HMODULE hMod, DWORD dwReason, LPVOID lpReserved)
 	{
 	case DLL_PROCESS_ATTACH:
 		Memory::VP::InjectHook(0x498B10, HookHash, PATCH_JUMP);
-		//MessageBoxA(0, ((char* (__cdecl*)(const char*))0x498A00)("footprintsize "), 0, 0);
 		DisableThreadLibraryCalls(hMod);
 		CreateThread(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(ImGuiInputWatcher), nullptr, 0, nullptr);
 		CreateThread(nullptr, 0, DirectXHookThread, hMod, 0, nullptr);
