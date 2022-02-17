@@ -48,7 +48,8 @@ long __stdcall eDirectX9Hook::EndScene(LPDIRECT3DDEVICE9 pDevice)
 	ImGui::GetIO().MouseDrawCursor = true;
 
 
-	ScarfaceMenu::Render();
+	TheMenu->Render();
+	TheMenu->Process();
 	//TheMenu->Draw();
 
 	ImGui::EndFrame();
@@ -72,13 +73,13 @@ LRESULT __stdcall eDirectX9Hook::WndProc(const HWND hWnd, UINT uMsg, WPARAM wPar
 	{
 	case WM_KEYDOWN:
 		if (wParam == VK_F1)
-			ScarfaceMenu::active ^= 1;
+			TheMenu->active ^= 1;
 		break;
 	default:
 		break;
 	}
 
-	if (ScarfaceMenu::active)
+	if (TheMenu->active)
 	{
 		ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam);
 		return true;

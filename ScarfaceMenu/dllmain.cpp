@@ -3,6 +3,10 @@
 #include "eDirectX9Hook.h"
 #include "utils/MemoryMgr.h"
 #include <iostream>
+#include "Scarface.h"
+#include "ScarfaceMenu.h"
+
+using namespace Memory::VP;
 
 void ImGuiInputWatcher()
 {
@@ -47,13 +51,24 @@ int HookHash(char* input, char a2)
 }
 
 
+void Init()
+{
+	TheMenu->Init();
+	Patch<void(__thiscall Camera::*)(CVector*)>(0x746D40, &Camera::SetPosition);
+	Patch<void(__thiscall Camera::*)(CVector*)>(0x747008, &Camera::SetPosition);
+	Patch<void(__thiscall Camera::*)(CVector*)>(0x747138, &Camera::SetPosition);
+	Patch<void(__thiscall Camera::*)(CVector*)>(0x747208, &Camera::SetPosition);
+	Patch<void(__thiscall Camera::*)(CVector*)>(0x7472E0, &Camera::SetPosition);
+	Patch<void(__thiscall Camera::*)(CVector*)>(0x7473B0, &Camera::SetPosition);
+}
 
 BOOL WINAPI DllMain(HMODULE hMod, DWORD dwReason, LPVOID lpReserved)
 {
 	switch (dwReason)
 	{
 	case DLL_PROCESS_ATTACH:
-		Memory::VP::InjectHook(0x498B10, HookHash, PATCH_JUMP);
+		//Memory::VP::InjectHook(0x498B10, HookHash, PATCH_JUMP);
+		Init();
 		DisableThreadLibraryCalls(hMod);
 		CreateThread(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(ImGuiInputWatcher), nullptr, 0, nullptr);
 		CreateThread(nullptr, 0, DirectXHookThread, hMod, 0, nullptr);
