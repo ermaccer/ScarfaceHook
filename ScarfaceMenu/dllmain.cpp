@@ -1,15 +1,19 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include "pch.h"
 #include "eDirectX9Hook.h"
+#include "eDirectInput8Hook.h"
 #include "utils/MemoryMgr.h"
 #include <iostream>
-#include "Scarface.h"
-#include "ScarfaceMenu.h"
+#include "scarface/Scarface.h"
+#include "plugin/ScarfaceMenu.h"
+#include "SettingsMgr.h"
+#include "hooks.h"
 
 using namespace Memory::VP;
 
 void ImGuiInputWatcher()
 {
+	// scroll wheel handled by dinput8 hook
 	while (true)
 	{
 		if (eDirectX9Hook::ms_bInit)
@@ -24,42 +28,43 @@ void ImGuiInputWatcher()
 			io.MouseDown[1] = (GetAsyncKeyState(VK_RBUTTON) & 0x8000) != 0;
 			io.MouseDown[2] = (GetAsyncKeyState(VK_MBUTTON) & 0x8000) != 0;
 		}
-
-
 		Sleep(1);
 	}
 }
 
-int HookHash(char* input, char a2)
+HRESULT WINAPI CoCreateInstance_Hook(IID& rclsid, LPUNKNOWN pUnkOuter, DWORD dwClsContext, REFIID riid, LPVOID* ppv)
 {
-	FILE* pFile = fopen("hash_log.txt", "a+");
-
-	int result = ((int(__cdecl*)(const char*))0x498A90)(input);
-
-	if (!result)
+	HRESULT res;
+	if (rclsid == CLSID_DirectInput8)
 	{
-		if (a2)
-			result = ((int(__cdecl*)(const char*, int))0x6DC1E0)(input,0);
-		else
-			result = ((int(__cdecl*)(const char*, int))0x6DC190)(input,0);
+		res = CoCreateInstance(rclsid, pUnkOuter, dwClsContext, riid, ppv);
+		eDirectInput8Hook::SetClassInterface(*(int*)(ppv));
+		eDirectInput8Hook::Init();
+		return res;
+
 	}
-
-	fprintf(pFile, "%s |\t %s\n", input, ((char*(__cdecl*)(int))0x498A00)(result));
-	fclose(pFile);
-
-	return result; 
+	else
+	{
+		res = CoCreateInstance(rclsid, pUnkOuter, dwClsContext, riid, ppv);
+		return res;
+	}
 }
 
 
 void Init()
 {
+	AllocConsole();
+	freopen("CONIN$", "r", stdin);
+	freopen("CONOUT$", "w", stdout);
+	freopen("CONOUT$", "w", stderr);
+
 	TheMenu->Init();
-	Patch<void(__thiscall Camera::*)(CVector*)>(0x746D40, &Camera::SetPosition);
-	Patch<void(__thiscall Camera::*)(CVector*)>(0x747008, &Camera::SetPosition);
-	Patch<void(__thiscall Camera::*)(CVector*)>(0x747138, &Camera::SetPosition);
-	Patch<void(__thiscall Camera::*)(CVector*)>(0x747208, &Camera::SetPosition);
-	Patch<void(__thiscall Camera::*)(CVector*)>(0x7472E0, &Camera::SetPosition);
-	Patch<void(__thiscall Camera::*)(CVector*)>(0x7473B0, &Camera::SetPosition);
+	hooks::Init();
+
+	CreateThread(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(ImGuiInputWatcher), nullptr, 0, nullptr);
+	InjectHook(0x7035DA, eDirectX9Hook::Direct3DCreate9_Hook);	
+
+	Patch(0x9CE540, CoCreateInstance_Hook);
 }
 
 BOOL WINAPI DllMain(HMODULE hMod, DWORD dwReason, LPVOID lpReserved)
@@ -67,15 +72,13 @@ BOOL WINAPI DllMain(HMODULE hMod, DWORD dwReason, LPVOID lpReserved)
 	switch (dwReason)
 	{
 	case DLL_PROCESS_ATTACH:
-		//Memory::VP::InjectHook(0x498B10, HookHash, PATCH_JUMP);
 		Init();
-		DisableThreadLibraryCalls(hMod);
-		CreateThread(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(ImGuiInputWatcher), nullptr, 0, nullptr);
-		CreateThread(nullptr, 0, DirectXHookThread, hMod, 0, nullptr);
-
+		eDirectX9Hook::Init("Scarface: The World is Yours");
+		eDirectInput8Hook::SetModule(hMod);
 		break;
 	case DLL_PROCESS_DETACH:
-		kiero::shutdown();
+		eDirectX9Hook::Destroy();
+		eDirectInput8Hook::Destroy();
 		break;
 	}
 	return TRUE;
