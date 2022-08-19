@@ -9,6 +9,8 @@ eSettingsManager::eSettingsManager()
 	CIniReader ini("");
 	CIniReader user("scfhook_user.ini");
 
+	bUseAlternateMethodToDisableInput = ini.ReadBoolean("Settings", "bUseAlternateMethodToDisableInput", false);
+
 	// user first
 	iHookMenuOpenKey = user.ReadInteger("Settings", "iHookMenuOpenKey", 0xFF);
 

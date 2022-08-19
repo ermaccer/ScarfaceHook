@@ -1605,10 +1605,32 @@ void ScarfaceMenu::KeyBind(int* var, char* bindName, char* name)
 void ScarfaceMenu::Process()
 {
 	//// player only
-	if (m_bAirbreak)
-		hooks::DisableInput();
+	if (!SettingsMgr->bUseAlternateMethodToDisableInput)
+	{
+		if (m_bAirbreak)
+			hooks::DisableInput();
+		else
+			hooks::EnableInput();
+	}
 	else
-		hooks::EnableInput();
+	{
+		if (m_bIsActive)
+		{
+			hooks::DisableInput();
+			hooks::DisableMouse();
+		}
+		else if (m_bAirbreak || m_bFreeCam)
+		{
+			hooks::DisableInput();
+			hooks::EnableMouse();
+		}
+		else
+		{
+			hooks::EnableInput();
+			hooks::EnableMouse();
+		}
+	}
+
 
 	if (!m_bIsActive)
 	{

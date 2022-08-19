@@ -62,8 +62,9 @@ void Init()
 	hooks::Init();
 
 	CreateThread(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(ImGuiInputWatcher), nullptr, 0, nullptr);
-	InjectHook(0x7035DA, eDirectX9Hook::Direct3DCreate9_Hook);	
 
+	InjectHook(0x7035DA, eDirectX9Hook::Direct3DCreate9_Hook);	
+	if (!SettingsMgr->bUseAlternateMethodToDisableInput)
 	Patch(0x9CE540, CoCreateInstance_Hook);
 }
 
@@ -74,10 +75,12 @@ BOOL WINAPI DllMain(HMODULE hMod, DWORD dwReason, LPVOID lpReserved)
 	case DLL_PROCESS_ATTACH:
 		Init();
 		eDirectX9Hook::Init("Scarface: The World is Yours");
+		if (!SettingsMgr->bUseAlternateMethodToDisableInput)
 		eDirectInput8Hook::SetModule(hMod);
 		break;
 	case DLL_PROCESS_DETACH:
 		eDirectX9Hook::Destroy();
+		if (!SettingsMgr->bUseAlternateMethodToDisableInput)
 		eDirectInput8Hook::Destroy();
 		break;
 	}

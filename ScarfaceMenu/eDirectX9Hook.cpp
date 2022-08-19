@@ -4,7 +4,6 @@
 #include "font.h"
 #include "eNotifManager.h"
 #include "SettingsMgr.h"
-#include "eDirectInput8Hook.h"
 #include "helper/eKeyboardMan.h"
 
 using namespace Memory::VP;
@@ -20,8 +19,6 @@ bool eDirectX9Hook::ms_bShouldReloadFonts;
 char eDirectX9Hook::ms_wndName[256] = {};
 uintptr_t	eDirectX9Hook::ms_pFuncPtrs[2] = {};
 
-// raw input
-RAWINPUTDEVICE rawDevice[1];
 
 void eDirectX9Hook::Init(const char* name)
 {
