@@ -156,6 +156,9 @@
     <ClInclude Include="scarface\String.h">
       <Filter>Header Files\scarface</Filter>
     </ClInclude>
+    <ClInclude Include="VersionCheck.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -265,6 +268,9 @@
     </ClCompile>
     <ClCompile Include="scarface\String.cpp">
       <Filter>Header Files\scarface</Filter>
+    </ClCompile>
+    <ClCompile Include="VersionCheck.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

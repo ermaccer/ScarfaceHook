@@ -971,11 +971,15 @@ void ScarfaceMenu::Draw()
 
 			ImGui::EndTabItem();
 		}
-		if (ImGui::BeginTabItem("Debug"))
+		if (GetModuleHandle("Scarface.DebugMenu.asi"))
 		{
-			DrawDebugTab();
-			ImGui::EndTabItem();
+			if (ImGui::BeginTabItem("Debug"))
+			{
+				DrawDebugTab();
+				ImGui::EndTabItem();
+			}
 		}
+
 		ImGui::EndTabBar();
 	}
 	else

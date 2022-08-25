@@ -8,6 +8,7 @@
 #include "plugin/ScarfaceMenu.h"
 #include "SettingsMgr.h"
 #include "hooks.h"
+#include "VersionCheck.h"
 
 using namespace Memory::VP;
 
@@ -58,6 +59,7 @@ void Init()
 	freopen("CONOUT$", "w", stdout);
 	freopen("CONOUT$", "w", stderr);
 
+
 	TheMenu->Init();
 	hooks::Init();
 
@@ -73,15 +75,25 @@ BOOL WINAPI DllMain(HMODULE hMod, DWORD dwReason, LPVOID lpReserved)
 	switch (dwReason)
 	{
 	case DLL_PROCESS_ATTACH:
-		Init();
-		eDirectX9Hook::Init("Scarface: The World is Yours");
-		if (!SettingsMgr->bUseAlternateMethodToDisableInput)
-		eDirectInput8Hook::SetModule(hMod);
+		if (IsExecutableSpecifiedVersion())
+		{
+			Init();
+			eDirectX9Hook::Init("Scarface: The World is Yours");
+			if (!SettingsMgr->bUseAlternateMethodToDisableInput)
+				eDirectInput8Hook::SetModule(hMod);
+		}
+		else
+		{
+			MessageBoxA(0, "Invalid game version!\nScarfaceHook only supports version 1.0.0.2 of the executable.\n\nIt is highly recommended to find a no-cd executable of 1.0.0.2 for best experience.\n\nThe game will now run without changes.", 0, MB_ICONINFORMATION);
+		}
 		break;
 	case DLL_PROCESS_DETACH:
-		eDirectX9Hook::Destroy();
-		if (!SettingsMgr->bUseAlternateMethodToDisableInput)
-		eDirectInput8Hook::Destroy();
+		if (IsExecutableSpecifiedVersion())
+		{
+			eDirectX9Hook::Destroy();
+			if (!SettingsMgr->bUseAlternateMethodToDisableInput)
+				eDirectInput8Hook::Destroy();
+		}
 		break;
 	}
 	return TRUE;
