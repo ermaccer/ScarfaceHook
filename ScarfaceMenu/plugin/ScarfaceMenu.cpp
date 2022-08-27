@@ -1054,7 +1054,7 @@ void ScarfaceMenu::DrawPlayerTab()
 
 	ImGui::_Checkbox("Airbreak", &m_bAirbreak);
 	ImGui::SameLine();
-	ShowHelpMarker("Check Invincbility too.");
+	ShowHelpMarker("Allows to move player with hotkeys.\nYou can configure keys in .ini file or in the Settings menu.\nCheck Invincbility too.");
 
 	if (m_bAirbreak)
 		ImGui::InputFloat("Airbreak Speed", &m_fAirbreakSpeed);
@@ -1242,7 +1242,7 @@ void ScarfaceMenu::DrawCameraTab()
 	ImGui::InputFloat("FOV", &camFov);
 	ImGui::Separator();
 	ImGui::_Checkbox("Free Camera", &m_bFreeCam);
-	ImGui::SameLine(); ShowHelpMarker("Allows to move camera with certain keys.\nYou can configure keys in .ini file.");
+	ImGui::SameLine(); ShowHelpMarker("Allows to move camera with hotkeys.\nYou can configure keys in .ini file or in the Settings menu.");
 
 	if (m_bFreeCam)
 	{
