@@ -1,5 +1,6 @@
 #include "IniReader.h"
 #include "SettingsMgr.h"
+#include "plugin/ScarfaceMenu.h"
 #include <Windows.h>
 
 eSettingsManager* SettingsMgr = new eSettingsManager;
@@ -64,6 +65,10 @@ eSettingsManager::eSettingsManager()
 
 	fMenuScale = user.ReadFloat("MenuSettings", "fMenuScale", 1.0f);
 
+	TheMenu->fps.XAdjust = user.ReadFloat("FPSettings", "xadjust", 0.0f);
+	TheMenu->fps.YAdjust = user.ReadFloat("FPSettings", "yadjust", 0.0f);
+	TheMenu->fps.ZAdjust = user.ReadFloat("FPSettings", "zadjust", 0.0f);
+
 	if (fMenuScale < 1.0f)
 		fMenuScale = 1.0f;
 
@@ -81,6 +86,9 @@ void eSettingsManager::SaveSettings()
 	user.WriteInteger("Settings", "iFreeCameraKeyUp", iFreeCameraKeyUp);
 	user.WriteInteger("Settings", "iFreeCameraKeyDown", iFreeCameraKeyDown);
 	user.WriteInteger("Settings", "iToggleFirstPersonKey", iToggleFirstPersonKey);
+	user.WriteFloat("FPSettings", "xadjust", TheMenu->fps.XAdjust);
+	user.WriteFloat("FPSettings", "yadjust", TheMenu->fps.YAdjust);
+	user.WriteFloat("FPSettings", "zadjust", TheMenu->fps.ZAdjust);
 }
 
 void eSettingsManager::ResetKeys()

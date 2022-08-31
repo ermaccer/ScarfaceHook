@@ -1259,7 +1259,17 @@ void ScarfaceMenu::DrawCameraTab()
 	ImGui::_Checkbox("Enable##fp", &fps.enabled);
 	if (fps.enabled)
 	{
-		ImGui::SliderFloat("Height Adjustement", &fps.YAdjust, 0.0, 1.0f);
+		ImGui::SliderFloat("Height Adjustement", &fps.YAdjust, -1.0f, 1.0f);
+		ImGui::SliderFloat("Distance", &fps.ZAdjust, -0.065, 0.500f);
+		ImGui::SliderFloat("Offset", &fps.XAdjust, -0.100, 0.100f);
+
+		if (ImGui::Button("Save", { -FLT_MIN, 0 }))
+		{
+			Notifications->SetNotificationTime(2500);
+			Notifications->PushNotification("Settings saved!");
+			eDirectX9Hook::ms_bShouldReloadFonts = true;
+			SettingsMgr->SaveSettings();
+		}
 	}
 	ImGui::Separator();
 }

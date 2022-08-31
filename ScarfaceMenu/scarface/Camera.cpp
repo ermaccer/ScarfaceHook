@@ -22,9 +22,13 @@ void Camera::SetPosition(Vector* pos)
 			if (plr)
 			{
 				Vector fpView = {};
-				Matrix viewMatrix = GetMatrix();
+				Matrix viewMatrix = plr->GetMatrix();
 				fpView = *plr->GetBonePosition(BONE_HEAD);
 				fpView.Y += TheMenu->fps.YAdjust;
+
+				fpView += viewMatrix.GetForward() * TheMenu->fps.ZAdjust;
+
+				fpView += viewMatrix.GetRight() * TheMenu->fps.XAdjust;
 				TheMenu->camPos = fpView;
 				((void(__thiscall*)(Camera*, Vector*))0x561640)(this, &fpView);
 			}

@@ -21,6 +21,8 @@ struct TeleporterPlace {
 struct FirstPersonSettings {
 	bool enabled;
 	float YAdjust;
+	float XAdjust;
+	float ZAdjust;
 };
 
 class ScarfaceMenu {
