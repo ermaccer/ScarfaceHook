@@ -1259,9 +1259,9 @@ void ScarfaceMenu::DrawPlayerTab()
 				plr->InfiniteAmmo(m_bInfiniteAmmo);
 	}
 	ImGui::_Checkbox("Invincibility", &m_bForceInvincibility);
-	ImGui::_Checkbox("Disable Fall Damage", &m_bDisableFallDamage);
 	ImGui::SameLine();
 	ShowHelpMarker("Player needs to die from fall damage to have the full effect.");
+	ImGui::_Checkbox("Disable Fall Damage", &m_bDisableFallDamage);
 	ImGui::Separator();
 	Vector plrPos = *(Vector*)(0x7C68DC);
 	ImGui::Text("Position");

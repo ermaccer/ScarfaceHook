@@ -14,6 +14,7 @@ the game in first person perspective!
 - Infinite Ammo and Invincibility cheats
 - Airbreak
   - Uses special keys to move player, default NUMPAD section (check Settings->Keys)
+- Animation player
 - Values Control (Gang Heat, Cop Heat etc.)
 - Vehicle Spawner
 - Character Spawner
