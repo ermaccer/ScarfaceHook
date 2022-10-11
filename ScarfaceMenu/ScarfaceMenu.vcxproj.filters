@@ -159,6 +159,12 @@
     <ClInclude Include="VersionCheck.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="scarface\ExplosionTemplate.h">
+      <Filter>Header Files\scarface</Filter>
+    </ClInclude>
+    <ClInclude Include="scarface\EffectsObject.h">
+      <Filter>Header Files\scarface</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -271,6 +277,12 @@
     </ClCompile>
     <ClCompile Include="VersionCheck.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="scarface\ExplosionTemplate.cpp">
+      <Filter>Header Files\scarface</Filter>
+    </ClCompile>
+    <ClCompile Include="scarface\EffectsObject.cpp">
+      <Filter>Header Files\scarface</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,6 @@
 #pragma once
 #include "Vector.h"
+#include "Character.h"
 
 class SpawnData
 {
@@ -23,6 +24,18 @@ public:
 };
 
 
+template < class T > class GameSet {
+public:
+	char pad[48];
+	T** pData;
+	int unk;
+	short count;
+
+	int Count() { return count; }
+	T* Get(int id) { if (id <= count) return pData[id]; else return nullptr; }
+};
+
+
 class CVManager {
 public:
 	int CreateVehicle(int type, int object, SpawnData* spawnData, Vector& position, Vector& rotation, float unkReal);
@@ -30,6 +43,8 @@ public:
 
 
 	static CVManager* GetInstance();
+
+	GameSet<CharacterObject>* GetCharacters();
 };
 
 

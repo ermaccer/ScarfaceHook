@@ -27,6 +27,11 @@ CVManager* CVManager::GetInstance()
 	return *(CVManager**)(0x822AF8);
 }
 
+GameSet<CharacterObject>* CVManager::GetCharacters()
+{
+	return *(GameSet<CharacterObject>**)(this + 64);
+}
+
 
 void SpawnCar(char* name, Vector* position)
 {

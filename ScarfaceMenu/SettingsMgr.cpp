@@ -69,6 +69,9 @@ eSettingsManager::eSettingsManager()
 	TheMenu->fps.YAdjust = user.ReadFloat("FPSettings", "yadjust", 0.0f);
 	TheMenu->fps.ZAdjust = user.ReadFloat("FPSettings", "zadjust", 0.0f);
 
+	// user first
+	iPlayLastAnimKey = user.ReadInteger("Settings", "iPlayLastAnimKey", 0xFF);
+
 	if (fMenuScale < 1.0f)
 		fMenuScale = 1.0f;
 
@@ -79,6 +82,8 @@ void eSettingsManager::SaveSettings()
 	CIniReader user("scfhook_user.ini");
 	user.WriteFloat("MenuSettings", "fMenuScale", fMenuScale);
 	user.WriteInteger("Settings", "iHookMenuOpenKey", iHookMenuOpenKey);
+	user.WriteInteger("Settings", "iHookSlowMoKey", iHookSlowMoKey);
+	user.WriteInteger("Settings", "iPlayLastAnimKey", iPlayLastAnimKey);
 	user.WriteInteger("Settings", "iFreeCameraKeyForward", iFreeCameraKeyForward);
 	user.WriteInteger("Settings", "iFreeCameraKeyBack", iFreeCameraKeyBack);
 	user.WriteInteger("Settings", "iFreeCameraKeyLeft", iFreeCameraKeyLeft);
@@ -101,4 +106,5 @@ void eSettingsManager::ResetKeys()
 	iFreeCameraKeyUp = 103;
 	iFreeCameraKeyDown = 97;
 	iHookSlowMoKey = VK_F5;
+	iPlayLastAnimKey = VK_F6;
 }

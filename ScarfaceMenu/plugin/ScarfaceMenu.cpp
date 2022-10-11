@@ -803,6 +803,216 @@ const char* szPeds[] = {
 };
 
 
+const char* szAnimations[] = {
+	"A80_Death",
+	"Arcade_State",
+	"BAT",
+	"Bartender_State",
+	"BeggingForLife",
+	"Boat_Sitting_Generic",
+	"Boat_Steer_Generic",
+	"Boat_Target_Generic",
+	"Browse_High_State",
+	"Browse_Low_State",
+	"CHAINSAW",
+	"CHICKEN_ATTACK",
+	"CHICKEN_DODGE",
+	"CHICKEN_IDLE",
+	"Cancel_Ambient_Loop",
+	"CarHit_Hard",
+	"CarHit_Hard_Death",
+	"CarHit_Low",
+	"CarHit_Mid",
+	"CarHit_Mid_Death",
+	"Car_Exit_Door_0",
+	"Car_Exit_Door_1",
+	"Car_Exit_NoDoor_0",
+	"Car_Exit_NoDoor_1",
+	"Car_Exit_Thrown_Driver",
+	"Car_Exit_Thrown_Driver_Dead",
+	"Car_GU_Target",
+	"Car_Pass_Door_0_to_Door_1",
+	"Car_Pass_Door_1_to_Door_0",
+	"CardDealer_State",
+	"CheckMachineHigh_State",
+	"CheckMachineLow_State",
+	"Cheering_State",
+	"CigMachine_State",
+	"CounterBrowsing_State",
+	"CowerState",
+	"CrouchCover",
+	"DAMAGE",
+	"DANCE",
+	"DEATH",
+	"Dancing_State",
+	"DealerIdles",
+	"DeathLandingHigh",
+	"DeathLandingHighDebug",
+	"DefaultDeathPose",
+	"Dishes_State",
+	"DiveFromVehicle",
+	"Dive_L",
+	"Dive_N",
+	"Dive_R",
+	"Dodge_L",
+	"Dodge_R",
+	"DriveThrough_State",
+	"Drumming_State",
+	"EXPLOSIONDAMAGE",
+	"EXPLOSIONDEATH",
+	"EnteringWallCover",
+	"ExecutionBack",
+	"ExecutionFront",
+	"ExitCover",
+	"ExitingWallCover",
+	"FIRING_MOUNTED_GUN",
+	"Frying_State",
+	"Gang_Idles",
+	"GetIn_Door_0_Busy",
+	"GetIn_Door_0_NoDoor",
+	"GetIn_Door_0_empty",
+	"GetIn_Door_1_Drive",
+	"GetIn_Door_1_Drive_NoPass",
+	"GetIn_Door_1_NoDoor",
+	"GetIn_Door_1_NoDoor_NoPass",
+	"GetIn_Door_1_NoDrive_Door",
+	"GetIn_Door_1_NoDrive_NoDoor",
+	"GetOut_Boat_Dive",
+	"GetUpBack",
+	"GetUpFront",
+	"Ghetto_State",
+	"Grab",
+	"GrenadeDeath",
+	"Grilling_State",
+	"GroinKick",
+	"Grooming_State",
+	"H_DS",
+	"Heli_Exit",
+	"Heli_Fire",
+	"Heli_GunDown",
+	"Heli_GunUp",
+	"Heli_Pilot_Idle",
+	"Idle",
+	"Idle_Alert",
+	"Intimidate_Fail_State",
+	"Intimidate_Success_State",
+	"Jukebox_State",
+	"KitchenPrep_State",
+	"LandingMedium",
+	"LeanLeftCover",
+	"LeanLeft_State",
+	"LeanRail_State",
+	"LeanRightCover",
+	"LeanRight_State",
+	"MELEEDAMAGE",
+	"Mailbox_State",
+	"Mercy",
+	"Motion_Toward",
+	"NearMiss",
+	"NearMissBack",
+	"NewspaperBox_State",
+	"Ordering_State",
+	"PHONEHANGUP",
+	"PHONELISTEN",
+	"PHONEPICKUP",
+	"PROXIMITYWEAPONATTACK",
+	"PUNCH",
+	"PassFire",
+	"PassSit",
+	"Patrol_Alert_State",
+	"Patrol_Relaxed_State",
+	"Patrol_Searching_State",
+	"Peeing_State",
+	"Player_State",
+	"PopMachine_State",
+	"Prone_KneeR_Slave",
+	"Push",
+	"Push_Block",
+	"RecordStore_State",
+	"ReputationGain",
+	"ReturnToSeatedState",
+	"Roll_L",
+	"Roll_R",
+	"SHARK_ATTACK",
+	"Seated_Cower",
+	"Sit_Bar_State",
+	"Sit_Conversation_State",
+	"Sit_Dancing_State",
+	"Sit_Drinking_State",
+	"Sit_Eating_State",
+	"Sit_Idle_State",
+	"Sit_Lounge_State",
+	"Sit_On_Bench",
+	"Sit_Ordering_State",
+	"Sit_Piano_State",
+	"Sit_Sleep_State",
+	"Sit_Smoking_State",
+	"Sit_Work_Cigar_State",
+	"Sit_Work_Jewlery_State",
+	"Sit_Work_Office_State",
+	"SlotMachine_State",
+	"Smoking_State",
+	"Spectating_State",
+	"Standing_State",
+	"StartShooting",
+	"Steer_Forward",
+	"Steer_Reverse",
+	"Stool_Drinking_State",
+	"Stool_Ordering",
+	"Stool_Sitting_State",
+	"StopShooting",
+	"TM_Vehicle_Car_Seat_Pass",
+	"TM_Vehicle_Car_Target_Back",
+	"TM_Vehicle_Car_Target_Pass",
+	"TONY_DEATH",
+	"TWITCHDAMAGE",
+	"Taunt",
+	"Telephone_State",
+	"Teller_State",
+	"ThrowDriverOut",
+	"ThrowDriverOutNoDoor",
+	"TrashBin_State",
+	"Truck_Exit_Door_0",
+	"Truck_Exit_Door_1",
+	"Truck_Exit_NoDoor_0",
+	"Truck_Exit_Thrown_Driver",
+	"Vehicle_Bail_Dive_Car_Door_0",
+	"Vehicle_Bail_Dive_Car_Door_1",
+	"Vehicle_Bail_Dive_Truck_Door_0",
+	"Vehicle_Bail_Dive_Truck_Door_1",
+	"Vehicle_Bail_Roll_Car_Door_0",
+	"Vehicle_Bail_Roll_Car_Door_1",
+	"Vehicle_Bail_Roll_Truck_Door_0",
+	"Vehicle_Bail_Roll_Truck_Door_1",
+	"WEAPONBUTTDAMAGE",
+	"WaitingTables_State",
+	"WallCover_Into_E",
+	"WallCover_Into_W",
+	"WallCover_Out_E",
+	"WallCover_Out_W",
+	"WashingHands_State",
+	"attract",
+	"clerk_State",
+	"exitVanState",
+	"listeningEndState",
+	"listeningState",
+	"propose",
+	"purchase_State",
+	"react_bad",
+	"react_good",
+	"react_great",
+	"respond_negative",
+	"respond_positive",
+	"streetDealerAttractState",
+	"streetDealerDismissState",
+	"streetDealerIdleState",
+	"stumbleState",
+	"talkingEndState",
+	"talkingState",
+	"taunt",
+};
+
+
 struct debugMenuPair {
 	char* name;
 	char* func;
@@ -889,6 +1099,7 @@ void ScarfaceMenu::Init()
 	sprintf(dbgItem, szDebugEntries[0].name);
 	sprintf(mission, szMissions[0]);
 	sprintf(characterSpawn, szPeds[0]);
+	sprintf(animName, szAnimations[128]);
 
 	m_fSpeed = 1.0f;
 
@@ -1042,8 +1253,13 @@ void ScarfaceMenu::DrawPlayerTab()
 
 	}
 	ImGui::Separator();
-	ImGui::_Checkbox("Infinite Ammo", &m_bInfiniteAmmo);
+	if (ImGui::_Checkbox("Infinite Ammo", &m_bInfiniteAmmo))
+	{
+		if (CharacterObject* plr = GetMainCharacter())
+				plr->InfiniteAmmo(m_bInfiniteAmmo);
+	}
 	ImGui::_Checkbox("Invincibility", &m_bForceInvincibility);
+	ImGui::_Checkbox("Disable Fall Damage", &m_bDisableFallDamage);
 	ImGui::SameLine();
 	ShowHelpMarker("Player needs to die from fall damage to have the full effect.");
 	ImGui::Separator();
@@ -1054,7 +1270,7 @@ void ScarfaceMenu::DrawPlayerTab()
 
 	ImGui::_Checkbox("Airbreak", &m_bAirbreak);
 	ImGui::SameLine();
-	ShowHelpMarker("Allows to move player with hotkeys.\nYou can configure keys in .ini file or in the Settings menu.\nCheck Invincbility too.");
+	ShowHelpMarker("Allows to move player with hotkeys.\nYou can configure keys in .ini file or in the Settings menu.\nAutomatically enforces no fall damage and invincibility.");
 
 	if (m_bAirbreak)
 		ImGui::InputFloat("Airbreak Speed", &m_fAirbreakSpeed);
@@ -1140,7 +1356,51 @@ void ScarfaceMenu::DrawPlayerTab()
 		}
 
 	}
+	if (ImGui::CollapsingHeader("Animation"))
+	{
+		static bool animManual = false;
 
+		ImGui::Text("Animation Name");
+		ImGui::SameLine();
+		char animTip[260] = {};
+		sprintf(animTip, "Press (%s) to play last selected animation.\n\nSome animations can make player stuck permanently and restore player state might not help, in case that happens, only \"fix\" is to reload profile, you can also try to spam \"Teleport Player To Camera\" to reset state.",
+			eKeyboardMan::KeyToString(SettingsMgr->iPlayLastAnimKey));
+		ShowHelpMarker(animTip);
+		if (animManual)
+		{
+			ImGui::PushItemWidth(-FLT_MIN);
+			ImGui::InputText("##animName", animName, sizeof(animName));
+			ImGui::PopItemWidth();
+		}
+		else
+		{
+			ImGui::PushItemWidth(-FLT_MIN);
+			if (ImGui::BeginCombo("##animList", animName))
+			{
+				for (int n = 0; n < IM_ARRAYSIZE(szAnimations); n++)
+				{
+					bool is_selected = (animName == szAnimations[n]);
+					if (ImGui::Selectable(szAnimations[n], is_selected))
+						sprintf(animName, szAnimations[n]);
+					if (is_selected)
+						ImGui::SetItemDefaultFocus();
+
+				}
+				ImGui::EndCombo();
+			}
+			ImGui::PopItemWidth();
+		}
+		ImGui::_Checkbox("Enter Manually", &animManual);
+
+		if (ImGui::Button("Play", { -FLT_MIN, 0 }))
+			GetMainCharacter()->PlayAnimation(animName);
+		if (ImGui::Button("Restore Player State", { -FLT_MIN, 0 }))
+		{
+			GetMainCharacter()->ResetAnimation();
+			GetMainCharacter()->SetPhysicalMode("Cancel_Ambient_Loop");
+		}
+
+	}
 	
 }
 
@@ -1272,6 +1532,10 @@ void ScarfaceMenu::DrawCameraTab()
 		}
 	}
 	ImGui::Separator();
+	if (ImGui::Button("Teleport Player To Camera", { -FLT_MIN, 0 }))
+	{
+		setPlayerPosition(TheCamera->GetLocation());
+	}
 }
 
 void ScarfaceMenu::DrawWorldTab()
@@ -1457,6 +1721,23 @@ void ScarfaceMenu::DrawMiscTab()
 
 	ImGui::Separator();
 
+	ImGui::TextWrapped("Fun (WIP)");
+
+	if (ImGui::Button("Explode All Characters", { -FLT_MIN, 0 }))
+		ExplodeAllPeds();
+	if (ImGui::Button("Make Everyone Dance", { -FLT_MIN, 0 }))
+		MakeAllPedsDance();
+
+#ifdef _DEBUG
+	static char text[256] = {};
+	ImGui::InputText("Text", text, sizeof(text));
+	static int hash = 0;
+	hash = _hash(text);
+	ImGui::Text("0x%X", hash);
+	ImGui::Text("%p chr", GetMainCharacter());
+#endif // _DEBUG
+
+
 }
 
 void ScarfaceMenu::DrawDebugTab()
@@ -1551,6 +1832,7 @@ void ScarfaceMenu::DrawSettings()
 		ImGui::LabelText("", "Core");
 		ImGui::Separator();
 		KeyBind(&SettingsMgr->iHookMenuOpenKey, "Open/Close Menu", "menu");
+		KeyBind(&SettingsMgr->iHookSlowMoKey, "Toggle Gamespeed", "slomo");
 		ImGui::Separator();
 		ImGui::LabelText("", "Camera/Airbreak");
 		ImGui::Separator();
@@ -1566,6 +1848,7 @@ void ScarfaceMenu::DrawSettings()
 		ImGui::LabelText("", "Features");
 		ImGui::Separator();
 		KeyBind(&SettingsMgr->iToggleFirstPersonKey, "First Person Mode", "fp_toggle");
+		KeyBind(&SettingsMgr->iPlayLastAnimKey, "Play Last Animation", "last_anim");
 		ImGui::Separator();
 
 		if (m_bPressingKey)
@@ -1654,9 +1937,14 @@ void ScarfaceMenu::Process()
 
 	gTonyIsInvincible = m_bForceInvincibility;
 
+
 	if (CharacterObject* plr = GetMainCharacter())
 	{
-		plr->InfiniteAmmo(m_bInfiniteAmmo);
+		if (m_bInfiniteAmmo)
+			plr->InfiniteAmmo(m_bInfiniteAmmo);
+
+		if (m_bForceInvincibility)
+			plr->SetHealth(1000.0f);
 	}
 
 
@@ -1687,6 +1975,9 @@ void ScarfaceMenu::Process()
 
 	if (m_bAirbreak)
 	{
+		m_bDisableFallDamage = true;
+		m_bForceInvincibility = true;
+
 		Matrix matrix = TheCamera->GetMatrix();
 
 		Vector fwd = matrix.GetForward();
@@ -1711,6 +2002,17 @@ void ScarfaceMenu::Process()
 			pos += up * TheMenu->m_fAirbreakSpeed * GetDeltaTime() * -1;
 
 		setPlayerPosition(pos);
+	}
+
+	if (m_bDisableFallDamage)
+	{
+		Memory::VP::Patch<int>(0x579183 + 3, 1000);
+		Memory::VP::Patch<int>(0x579264 + 3, 1000);
+	}
+	else
+	{
+		Memory::VP::Patch<int>(0x579183 + 3, 0);
+		Memory::VP::Patch<int>(0x579264 + 3, 0);
 	}
 
 	Notifications->Update();
@@ -1758,4 +2060,46 @@ float GetDeltaTime()
 		delta = 1.0f / ImGui::GetIO().Framerate;
 
 	return delta;
+}
+
+void ExplodeAllPeds()
+{
+	GameSet<CharacterObject>* characters = CVManager::GetInstance()->GetCharacters();
+
+	for (int i = 0; i < characters->Count(); i++)
+	{
+		CharacterObject* p = characters->Get(i);
+		if (p == GetMainCharacter())
+			continue;
+		ExplosionTemplate* explosion = FindExplosion("ExplosionTemplateEcopropLarge");
+		if (explosion)
+		{
+			Vector pos = p->GetLocation();
+			EffectsObject::GetInstance()->PlayPedExplosion(&pos);
+			pos.Y += 1.5f;
+			explosion->Explode(&pos);
+
+		}
+
+	}
+}
+
+void MakeAllPedsDance()
+{
+	GameSet<CharacterObject>* characters = CVManager::GetInstance()->GetCharacters();
+
+	for (int i = 0; i < characters->Count(); i++)
+	{
+		CharacterObject* p = characters->Get(i);
+		if (p == GetMainCharacter())
+			continue;
+
+		if (p)
+		{
+			p->ResetAnimation();
+			p->PlayAnimation("Dancing_State", 0);
+			p->SetPhysicalMode("Dancing_State");
+		}
+
+	}
 }

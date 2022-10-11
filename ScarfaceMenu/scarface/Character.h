@@ -12,6 +12,7 @@ enum eBones {
 class CharacterObject : public BaseObject {
 public:
 	void AddHealth(float value);
+	void SetHealth(int value);
 	Vector* GetBonePosition(int boneId);
 
 	int GetCurrentWeapon();
@@ -23,6 +24,10 @@ public:
 
 	void SetCurrentSeq(int id);
 	void InfiniteAmmo(bool status);
+
+	void PlayAnimation(char* name, int priority = 90);
+	void ResetAnimation();
+	void SetPhysicalMode(char* name);
 };
 
 

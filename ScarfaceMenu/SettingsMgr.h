@@ -10,7 +10,7 @@ public:
 	int iHookSlowMoKey;
 
 	int iToggleFirstPersonKey;
-
+	int iPlayLastAnimKey;
 	// free camera keys
 	int iFreeCameraKeyForward;
 	int iFreeCameraKeyBack;

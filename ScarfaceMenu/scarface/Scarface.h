@@ -9,6 +9,8 @@
 #include "TimeOfDay.h"
 #include "AI.h"
 #include "ControllerInput.h"
+#include "ExplosionTemplate.h"
+#include "EffectsObject.h"
 
 void runScript(const char* script);
 

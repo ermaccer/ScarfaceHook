@@ -112,8 +112,6 @@ long __stdcall eDirectX9Hook::EndScene_Hook(LPDIRECT3DDEVICE9 pDevice)
 
 	TheMenu->Draw();
 
-
-
 	ImGui::EndFrame();
 
 	ImGui::Render();
@@ -138,6 +136,24 @@ LRESULT __stdcall eDirectX9Hook::WndProc(const HWND hWnd, UINT uMsg, WPARAM wPar
 	case WM_KEYDOWN:
 		if (wParam == SettingsMgr->iHookMenuOpenKey)
 			TheMenu->m_bIsActive ^= 1;
+		if (wParam == SettingsMgr->iHookSlowMoKey)
+		{
+			TheMenu->m_bSlowMotion ^= 1;
+			if (TheMenu->m_bSlowMotion)
+			{
+				runScript("PopTimeScale();");
+				char buff[128];
+				sprintf(buff, "PushTimeScale(%f);", TheMenu->m_fSpeed);
+				runScript(buff);
+			}
+			else
+				runScript("PopTimeScale();");
+		}
+		if (wParam == SettingsMgr->iPlayLastAnimKey)
+		{
+			if (GetMainCharacter())
+				GetMainCharacter()->PlayAnimation(TheMenu->animName);
+		}
 		break;
 	default:
 		break;

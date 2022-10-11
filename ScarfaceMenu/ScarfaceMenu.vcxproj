@@ -30,26 +30,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -190,6 +190,8 @@
     <ClInclude Include="scarface\Character.h" />
     <ClInclude Include="scarface\ControllerInput.h" />
     <ClInclude Include="scarface\CVManager.h" />
+    <ClInclude Include="scarface\EffectsObject.h" />
+    <ClInclude Include="scarface\ExplosionTemplate.h" />
     <ClInclude Include="scarface\Matrix.h" />
     <ClInclude Include="scarface\Misc.h" />
     <ClInclude Include="scarface\Scarface.h" />
@@ -235,6 +237,8 @@
     <ClCompile Include="scarface\Character.cpp" />
     <ClCompile Include="scarface\ControllerInput.cpp" />
     <ClCompile Include="scarface\CVManager.cpp" />
+    <ClCompile Include="scarface\EffectsObject.cpp" />
+    <ClCompile Include="scarface\ExplosionTemplate.cpp" />
     <ClCompile Include="scarface\Matrix.cpp" />
     <ClCompile Include="scarface\Misc.cpp" />
     <ClCompile Include="scarface\Scarface.cpp" />

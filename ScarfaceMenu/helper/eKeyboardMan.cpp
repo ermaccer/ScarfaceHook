@@ -2,7 +2,6 @@
 #include <iostream>
 #include <Windows.h>
 
-
 eVKKeyCode eKeyboardMan::GetLastKey()
 {
 	eVKKeyCode key = VK_KEY_NULL;
@@ -35,5 +34,5 @@ const char* eKeyboardMan::KeyToString(int code)
 	else if (result)
 		return buff;
 	else
-		return "Unknown";
+		return "Unknown/Not set";
 }

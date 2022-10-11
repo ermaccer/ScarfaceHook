@@ -11,8 +11,6 @@ int GetDeviceID(const char* name, int unk, int flag)
     return  ((float(__cdecl*)(const char*, int))0x6DC190)(name, unk);
 }
 
-
-
 ControllerInput& GetControllerInput()
 {
     return input;

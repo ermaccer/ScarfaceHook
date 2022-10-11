@@ -30,6 +30,7 @@ public:
 	bool	 m_bIsActive = false;
 	bool	 m_bSubmenuActive[TOTAL_SUBMENUS] = {};
 	bool     m_bPressingKey = false;
+	bool	 m_bSlowMotion = false;
 	bool	 m_bCustomCameraPos = false;
 	bool	 m_bCustomCameraFOV = false;
 	bool	 m_bFreeCam = false;
@@ -40,6 +41,8 @@ public:
 	bool     m_bCharacterUseWeapon = false;
 	bool	 m_bInfiniteHealth = false;
 	bool	 m_bInfiniteAmmo = false;
+	bool	 m_bDisableFallDamage = false;
+
 
 	Vector camPos = {};
 	Vector customSpawnPos = {};
@@ -64,6 +67,7 @@ public:
 	char characterSpawn[128] = {};
 	char characterWeapon[128] = {};
 	char teleportName[128] = {};
+	char animName[256] = {};
 
 
 	void Init();
@@ -92,7 +96,8 @@ public:
 };
 
 float GetDeltaTime();
-
+void ExplodeAllPeds();
+void MakeAllPedsDance();
 
 extern ScarfaceMenu* TheMenu;
 
