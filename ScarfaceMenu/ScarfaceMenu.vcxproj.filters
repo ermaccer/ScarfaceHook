@@ -165,6 +165,9 @@
     <ClInclude Include="scarface\EffectsObject.h">
       <Filter>Header Files\scarface</Filter>
     </ClInclude>
+    <ClInclude Include="api.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -283,6 +286,9 @@
     </ClCompile>
     <ClCompile Include="scarface\EffectsObject.cpp">
       <Filter>Header Files\scarface</Filter>
+    </ClCompile>
+    <ClCompile Include="api.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

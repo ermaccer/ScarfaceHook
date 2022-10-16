@@ -158,6 +158,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="api.h" />
     <ClInclude Include="eDirectInput8Hook.h" />
     <ClInclude Include="eDirectX9Hook.h" />
     <ClInclude Include="eNotifManager.h" />
@@ -205,6 +206,7 @@
     <ClInclude Include="VersionCheck.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="api.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="eDirectInput8Hook.cpp" />
     <ClCompile Include="eDirectX9Hook.cpp" />
