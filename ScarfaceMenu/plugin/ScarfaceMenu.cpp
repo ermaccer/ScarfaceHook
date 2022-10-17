@@ -1265,6 +1265,22 @@ void ScarfaceMenu::DrawPlayerTab()
 	ImGui::Separator();
 	Vector plrPos = *(Vector*)(0x7C68DC);
 	ImGui::Text("Position");
+#ifdef CLIP_POS
+	if (ImGui::Button("Copy"))
+	{
+		char pos[128] = {};
+		sprintf(pos, "%f %f %f", plrPos.X, plrPos.Y, plrPos.Z);
+		const size_t len = strlen(pos);
+		HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, len);
+		memcpy(GlobalLock(hMem), pos, len);
+		GlobalUnlock(hMem);
+		OpenClipboard(0);
+		EmptyClipboard();
+		SetClipboardData(CF_TEXT, hMem);
+		CloseClipboard();
+		MessageBeep(MB_ICONINFORMATION);
+	}
+#endif
 	ImGui::InputFloat3("X | Y | Z", &plrPos.X);
 
 

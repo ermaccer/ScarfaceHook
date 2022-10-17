@@ -4,6 +4,7 @@
 #include <vector>
 
 #define MAX_TELEPORTS 200
+//#define CLIP_POS
 
 enum eMenuSubMenus {
 	SUBMENU_SETTINGS,

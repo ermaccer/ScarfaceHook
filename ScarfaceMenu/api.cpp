@@ -8,3 +8,9 @@ bool ScarfaceHook_GetMenuActive()
     else
       return false;
 }
+
+void ScarfaceHook_GetPlayerPosition(Vector* out)
+{
+    if (GetMainCharacter())
+        *out = GetMainCharacter()->GetLocation();
+}
