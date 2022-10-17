@@ -33,12 +33,42 @@ void ImGuiInputWatcher()
 	}
 }
 
+HRESULT __stdcall CoCreateInstanceProxy(LPCTSTR szDllName,REFCLSID rclsid, IUnknown* pUnkOuter, REFIID riid, LPVOID FAR* ppv)
+{
+	HRESULT hr = REGDB_E_KEYMISSING;
+
+	HMODULE hDll = ::LoadLibrary(szDllName);
+	if (hDll == 0)
+		return hr;
+
+	typedef HRESULT(__stdcall* pDllGetClassObject)(REFCLSID rclsid, REFIID riid, LPVOID FAR* ppv);
+	pDllGetClassObject GetClassObject = (pDllGetClassObject)::GetProcAddress(hDll, "DllGetClassObject");
+	if (GetClassObject == 0)
+	{
+		::FreeLibrary(hDll);
+		return hr;
+	}
+
+	IClassFactory* pIFactory;
+
+	hr = GetClassObject(rclsid, IID_IClassFactory, (LPVOID*)&pIFactory);
+
+	if (!SUCCEEDED(hr))
+		return hr;
+
+	hr = pIFactory->CreateInstance(pUnkOuter, riid, ppv);
+	pIFactory->Release();
+
+	return hr;
+}
+
 HRESULT WINAPI CoCreateInstance_Hook(IID& rclsid, LPUNKNOWN pUnkOuter, DWORD dwClsContext, REFIID riid, LPVOID* ppv)
 {
 	HRESULT res;
 	if (rclsid == CLSID_DirectInput8)
 	{
-		res = CoCreateInstance(rclsid, pUnkOuter, dwClsContext, riid, ppv);
+		res = CoCreateInstanceProxy("dinput8.dll", rclsid, pUnkOuter, riid, ppv);
+		//res = CoCreateInstance(rclsid, pUnkOuter, dwClsContext, riid, ppv);
 		eDirectInput8Hook::SetClassInterface(*(int*)(ppv));
 		eDirectInput8Hook::Init();
 		return res;
