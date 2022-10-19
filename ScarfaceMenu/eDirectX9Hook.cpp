@@ -8,27 +8,76 @@
 
 using namespace Memory::VP;
 
-D3DEndScene eDirectX9Hook::m_pEndScene;
 HWND eDirectX9Hook::ms_hWindow;
 WNDPROC eDirectX9Hook::ms_pWndProc;
-D3DReset eDirectX9Hook::m_pReset;
-
+uintptr_t eDirectX9Hook::ms_pHookJumpEndScene;
+uintptr_t eDirectX9Hook::ms_pHookJumpReset;
 bool eDirectX9Hook::ms_bInit;
 bool eDirectX9Hook::ms_bShouldReloadFonts;
 
-char eDirectX9Hook::ms_wndName[256] = {};
-uintptr_t	eDirectX9Hook::ms_pFuncPtrs[2] = {};
 
 
-void eDirectX9Hook::Init(const char* name)
+void eDirectX9Hook::Init()
 {
-	m_pEndScene = 0;
 	ms_hWindow = 0;
 	ms_pWndProc = 0;
 	ms_bInit = false;
 	ms_bShouldReloadFonts = false;
 	Notifications->Init();
-	sprintf(ms_wndName, name);
+}
+
+void eDirectX9Hook::RegisterHook(uintptr_t addr, uintptr_t offset, eMethodType type)
+{
+	switch (type)
+	{
+	case Method_EndScene:
+		ms_pHookJumpEndScene = offset;
+		InjectHook(addr, Hook_EndScene, PATCH_JUMP);
+		break;
+	case Method_Reset:
+		ms_pHookJumpReset = offset;
+		InjectHook(addr, Hook_Reset, PATCH_JUMP);
+		break;
+	default:
+		break;
+	}
+}
+
+void __declspec(naked) eDirectX9Hook::Hook_EndScene()
+{
+	static LPDIRECT3DDEVICE9 pDevice = 0;
+	_asm {
+		mov esi, [esi + 560]
+		mov  eax, [esi]
+		mov pDevice, esi
+		pushad
+	}
+	EndScene(pDevice);
+	_asm {
+		popad
+		push    esi
+		jmp ms_pHookJumpEndScene
+	}
+}
+
+void __declspec(naked) eDirectX9Hook::Hook_Reset()
+{
+	_asm pushad
+	ImGui_ImplDX9_InvalidateDeviceObjects();
+	_asm {
+		popad
+		mov     eax, [esi]
+		mov     ecx, [eax]
+		push    ebx
+		push    eax
+		call    dword ptr[ecx + 64]
+		pushad
+	}
+	ImGui_ImplDX9_CreateDeviceObjects();
+	_asm {
+		popad
+		jmp	ms_pHookJumpReset
+	}
 }
 
 void eDirectX9Hook::SetImGuiStyle()
@@ -43,7 +92,7 @@ void eDirectX9Hook::SetImGuiStyle()
 	{
 		ImVec4 col = style->Colors[i];
 
-		if (i == ImGuiCol_Text || i == ImGuiCol_TextDisabled || 
+		if (i == ImGuiCol_Text || i == ImGuiCol_TextDisabled ||
 			i == ImGuiCol_WindowBg || i == ImGuiCol_MenuBarBg) continue;
 		style->Colors[i] = { col.x * 2.25f, 0,0 , col.w };
 	}
@@ -75,7 +124,7 @@ void eDirectX9Hook::ReloadImGuiFont()
 		ms_bShouldReloadFonts = false;
 }
 
-long __stdcall eDirectX9Hook::EndScene_Hook(LPDIRECT3DDEVICE9 pDevice)
+void __stdcall eDirectX9Hook::EndScene(LPDIRECT3DDEVICE9 pDevice)
 {
 	if (!ms_bInit)
 	{
@@ -90,7 +139,6 @@ long __stdcall eDirectX9Hook::EndScene_Hook(LPDIRECT3DDEVICE9 pDevice)
 
 	if (ms_bShouldReloadFonts)
 		ReloadImGuiFont();
-	pDevice->SetRenderState(D3DRS_SRGBWRITEENABLE, false);
 
 	ImGui_ImplDX9_NewFrame();
 	ImGui_ImplWin32_NewFrame();
@@ -118,15 +166,6 @@ long __stdcall eDirectX9Hook::EndScene_Hook(LPDIRECT3DDEVICE9 pDevice)
 	ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
 
 	TheMenu->Process();
-	return m_pEndScene(pDevice);
-}
-
-long __stdcall eDirectX9Hook::Reset_Hook(LPDIRECT3DDEVICE9 pDevice, D3DPRESENT_PARAMETERS * pPresentationParameters)
-{
-	ImGui_ImplDX9_InvalidateDeviceObjects();
-	HRESULT hr = m_pReset(pDevice, pPresentationParameters);
-	ImGui_ImplDX9_CreateDeviceObjects();
-	return hr;
 }
 
 LRESULT __stdcall eDirectX9Hook::WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -164,56 +203,6 @@ LRESULT __stdcall eDirectX9Hook::WndProc(const HWND hWnd, UINT uMsg, WPARAM wPar
 		return true;
 	}
 
+
 	return CallWindowProc(ms_pWndProc, hWnd, uMsg, wParam, lParam);
-}
-
-IDirect3D9* __stdcall eDirectX9Hook::Direct3DCreate9_Hook(UINT SDKVersion)
-{
-	IDirect3D9* d3d = Direct3DCreate9(SDKVersion);
-
-	HWND hWnd = FindWindowA(ms_wndName, 0);
-	if (hWnd)
-	{
-		if (d3d)
-		{
-			MH_Initialize();
-			D3DPRESENT_PARAMETERS pp = {};
-			pp.hDeviceWindow = hWnd;
-			pp.SwapEffect = D3DSWAPEFFECT_DISCARD;
-			pp.Windowed = true;
-
-			IDirect3DDevice9* pDevice = nullptr;
-			if (FAILED(d3d->CreateDevice(0, D3DDEVTYPE_HAL, pp.hDeviceWindow, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &pp, &pDevice)))
-			{
-				d3d->Release();
-				return false;
-			}
-			
-			void** vTable = (void**)(*(int*)pDevice);
-			uintptr_t ms_pFuncPtrs[2];
-			ms_pFuncPtrs[0] = (uintptr_t)vTable[42];
-			ms_pFuncPtrs[1] = (uintptr_t)vTable[16];
-
-
-			if (MH_CreateHook((void*)ms_pFuncPtrs[0], EndScene_Hook, (LPVOID*)&m_pEndScene) != MH_OK || MH_EnableHook((void*)ms_pFuncPtrs[0]) != MH_OK)
-			{
-				MessageBox(0, "Failed to hook EndScene!",0,0);
-			}
-			if (MH_CreateHook((void*)ms_pFuncPtrs[1], Reset_Hook, (LPVOID*)&m_pReset) != MH_OK || MH_EnableHook((void*)ms_pFuncPtrs[1]) != MH_OK)
-			{
-				MessageBox(0, "Failed to hook Reset!", 0, 0);
-			}
-			
-			// no longer needed
-			pDevice->Release();
-		}
-	}
-
-	return d3d;
-}
-
-void eDirectX9Hook::Destroy()
-{
-	MH_DisableHook((void*)ms_pFuncPtrs[0]);
-	MH_DisableHook((void*)ms_pFuncPtrs[1]);
 }

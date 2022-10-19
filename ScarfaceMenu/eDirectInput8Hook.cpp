@@ -36,7 +36,7 @@ void eDirectInput8Hook::Init()
 		void** vTable = (void**)(*(int*)ms_pClassInterface);
 		uintptr_t cCreateDevice = (uintptr_t)vTable[3];
 		HRESULT res = ((HRESULT(__stdcall*)(IDirectInput8*, const GUID&, LPDIRECTINPUTDEVICE8*,LPUNKNOWN))cCreateDevice)(ms_pDirectInput, GUID_SysKeyboard, &ms_pDevice, NULL);
-
+	
 		if (!(res == DI_OK))
 		{
 			ms_pDirectInput->Release();

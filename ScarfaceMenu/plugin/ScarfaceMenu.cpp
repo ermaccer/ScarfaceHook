@@ -403,6 +403,7 @@ const char* szCutscenes[] = {
 	"NIS_36_sandman",
 	"PAL_MNIS_S04_1_Tony_Kills_Ricardo",
 	"PAL_MNIS_S14_0_Intro_Diaz_Motors",
+	"MNIS_S01_0_Tony_in_Chair",
 };
 
 const char* szMissions[] = {

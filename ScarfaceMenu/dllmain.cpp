@@ -68,7 +68,6 @@ HRESULT WINAPI CoCreateInstance_Hook(IID& rclsid, LPUNKNOWN pUnkOuter, DWORD dwC
 	if (rclsid == CLSID_DirectInput8)
 	{
 		res = CoCreateInstanceProxy("dinput8.dll", rclsid, pUnkOuter, riid, ppv);
-		//res = CoCreateInstance(rclsid, pUnkOuter, dwClsContext, riid, ppv);
 		eDirectInput8Hook::SetClassInterface(*(int*)(ppv));
 		eDirectInput8Hook::Init();
 		return res;
@@ -95,9 +94,11 @@ void Init()
 
 	CreateThread(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(ImGuiInputWatcher), nullptr, 0, nullptr);
 
-	InjectHook(0x7035DA, eDirectX9Hook::Direct3DCreate9_Hook);	
+	eDirectX9Hook::RegisterHook(0x64B1CA, 0x64B1D3, Method_EndScene);
+	eDirectX9Hook::RegisterHook(0x654922, 0x65492B, Method_Reset);
+
 	if (!SettingsMgr->bUseAlternateMethodToDisableInput)
-	Patch(0x9CE540, CoCreateInstance_Hook);
+		Patch(0x9CE540, CoCreateInstance_Hook);
 }
 
 BOOL WINAPI DllMain(HMODULE hMod, DWORD dwReason, LPVOID lpReserved)
@@ -108,7 +109,7 @@ BOOL WINAPI DllMain(HMODULE hMod, DWORD dwReason, LPVOID lpReserved)
 		if (IsExecutableSpecifiedVersion())
 		{
 			Init();
-			eDirectX9Hook::Init("Scarface: The World is Yours");
+			eDirectX9Hook::Init();
 			if (!SettingsMgr->bUseAlternateMethodToDisableInput)
 				eDirectInput8Hook::SetModule(hMod);
 		}
@@ -120,7 +121,6 @@ BOOL WINAPI DllMain(HMODULE hMod, DWORD dwReason, LPVOID lpReserved)
 	case DLL_PROCESS_DETACH:
 		if (IsExecutableSpecifiedVersion())
 		{
-			eDirectX9Hook::Destroy();
 			if (!SettingsMgr->bUseAlternateMethodToDisableInput)
 				eDirectInput8Hook::Destroy();
 		}
