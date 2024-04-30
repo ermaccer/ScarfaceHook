@@ -2,15 +2,38 @@
 
 void EffectsObject::CreateEffect(int type, int unk, int unk2, Vector* pos, Vector* upMat)
 {
-	((void(__thiscall*)(EffectsObject*, int, int, int, Vector*, Vector*))0x5E7FD0)(this, type, unk, unk2, pos, upMat);
+	static uintptr_t pat = _pattern(PATID_EffectsObject_CreateEffect_Call);
+	if (pat)
+	{
+		static int(__thiscall * funcAddr)(EffectsObject*, int, int, int, Vector*, Vector*) = nullptr;
+
+		if (!funcAddr)
+			ReadCall(pat, funcAddr);
+
+		if (funcAddr)
+			funcAddr(this, type, unk, unk2, pos, upMat);
+	}
 }
 
 void EffectsObject::PlayPedExplosion(Vector* pos)
 {
-	((void(__thiscall*)(EffectsObject*, Vector*))0x5E8A70)(this, pos);
+	static uintptr_t pat = _pattern(PATID_EffectsObject_PlayPedExplosion);
+	if (pat)
+		((void(__thiscall*)(EffectsObject*, Vector*))pat)(this, pos);
 }
 
 EffectsObject* EffectsObject::GetInstance()
 {
-	return ((EffectsObject * (__cdecl*)())0x5E8350)();
+	static uintptr_t pat = _pattern(PATID_EffectsObject_GetInstance_Call);
+	if (pat)
+	{
+		static EffectsObject* (__cdecl * funcAddr)() = nullptr;
+
+		if (!funcAddr)
+			ReadCall(pat, funcAddr);
+
+		if (funcAddr)
+			return funcAddr();
+	}
+	return nullptr;
 }

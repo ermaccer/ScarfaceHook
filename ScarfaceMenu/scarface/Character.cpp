@@ -3,12 +3,25 @@
 
 CharacterObject* GetMainCharacter()
 {
-	return *(CharacterObject**)(0x825A78);
+	static CharacterObject* pMainCharacter = nullptr;
+
+	if (pMainCharacter == nullptr)
+	{
+		static uintptr_t pat = _pattern(PATID_Character_MainCharacter);
+		if (pat)
+		{
+			unsigned int offset = *(unsigned int*)(pat);
+			pMainCharacter = *(CharacterObject**)(offset);
+		}
+	}
+	return pMainCharacter;
 }
 
 void CharacterObject::AddHealth(float value)
 {
-	((void(__thiscall*)(CharacterObject*, float))0x577650)(this, value);
+	static uintptr_t pat = _pattern(PATID_Character_AddHealth);
+	if (pat)
+		((void(__thiscall*)(CharacterObject*, float))pat)(this, value);
 }
 
 void CharacterObject::SetHealth(int value)
@@ -18,32 +31,19 @@ void CharacterObject::SetHealth(int value)
 
 Vector* CharacterObject::GetBonePosition(int boneId)
 {
-	return 	((Vector * (__thiscall*)(CharacterObject*, int))0x572480)(this, boneId);
-}
+	static Vector fallback = {};
+	static uintptr_t pat = _pattern(PATID_Character_GetBonePosition_Call);
+	if (pat)
+	{
+		static Vector*(__thiscall *funcAddr)(CharacterObject*, int) = nullptr;
 
-int CharacterObject::GetCurrentWeapon()
-{
-	return 	((int(__thiscall*)(CharacterObject*))0x5882A0)(this);
-}
+		if (!funcAddr)
+			ReadCall(pat, funcAddr);
 
-void CharacterObject::RemoveWeaponFromInventory(int weapon)
-{
-	((void(__thiscall*)(CharacterObject*))0x5875D0)(this);
-}
-
-int CharacterObject::IsCharacterInCar()
-{
-	return ((int(__thiscall*)(CharacterObject*))0x5873E0)(this);
-}
-
-AICommandSequencer* CharacterObject::GetAiCmdSeq()
-{
-	return ((AICommandSequencer*(__thiscall*)(CharacterObject*))0x574150)(this);
-}
-
-void CharacterObject::SetCurrentSeq(int id)
-{
-	*(int*)((int)this + 1092) = id;
+		if (funcAddr)
+			return funcAddr(this, boneId);
+	}
+	return &fallback;
 }
 
 void CharacterObject::InfiniteAmmo(bool status)
@@ -54,12 +54,33 @@ void CharacterObject::InfiniteAmmo(bool status)
 void CharacterObject::PlayAnimation(char* name, int priority)
 {
 	unsigned int hash = _hash(name);
-	((void(__thiscall*)(CharacterObject*, unsigned int*, int, int))0x576FC0)(this, &hash ,priority,0);
+
+	static uintptr_t pat = _pattern(PATID_Character_PlayAnimation_Call);
+	if (pat)
+	{
+		static void (__thiscall * funcAddr)(CharacterObject*, unsigned int*, int, int) = nullptr;
+
+		if (!funcAddr)
+			ReadCall(pat, funcAddr);
+
+		if (funcAddr)
+			funcAddr(this, &hash, priority, 0);
+	}
 }
 
 void CharacterObject::ResetAnimation()
 {
-	((void(__thiscall*)(CharacterObject*, bool))0x574990)(this, 0);
+	static uintptr_t pat = _pattern(PATID_Character_ResetAnimation_Call);
+	if (pat)
+	{
+		static void(__thiscall * funcAddr)(CharacterObject*, bool) = nullptr;
+
+		if (!funcAddr)
+			ReadCall(pat, funcAddr);
+
+		if (funcAddr)
+			funcAddr(this, 0);
+	}
 }
 
 void CharacterObject::SetPhysicalMode(char* name)

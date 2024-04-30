@@ -1,4 +1,5 @@
 #pragma once
+#include "../utils.h"
 
 
 class Template {
@@ -16,4 +17,10 @@ public:
 	int GetType();
 };
 
+class TemplateManager {
+public:
+
+};
+
+TemplateManager* GetTemplateManager();
 Template* GetTemplateData(char* name, int type);

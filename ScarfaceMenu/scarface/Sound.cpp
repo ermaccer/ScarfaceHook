@@ -2,5 +2,15 @@
 
 void Frontend_PlaySound(char* name)
 {
-	((void(__cdecl*)(char*))0x4A44D0)(name);
+	static uintptr_t pat = _pattern(PATID_Frontend_PlaySound_Call);
+	if (pat)
+	{
+		static void(__cdecl * funcAddr)(char*) = nullptr;
+
+		if (!funcAddr)
+			ReadCall(pat, funcAddr);
+
+		if (funcAddr)
+			funcAddr(name);
+	}
 }

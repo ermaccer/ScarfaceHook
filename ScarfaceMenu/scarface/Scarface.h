@@ -1,4 +1,5 @@
 #pragma once
+#include "../utils.h"
 #include "Vector.h"
 #include "Matrix.h"
 #include "Character.h"
@@ -7,8 +8,6 @@
 #include "Misc.h"
 #include "Sound.h"
 #include "TimeOfDay.h"
-#include "AI.h"
-#include "ControllerInput.h"
 #include "ExplosionTemplate.h"
 #include "EffectsObject.h"
 

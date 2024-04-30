@@ -1,4 +1,5 @@
 #pragma once
+#include "../utils.h"
 #include "Vector.h"
 
 class EffectsObject {

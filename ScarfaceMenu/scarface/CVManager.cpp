@@ -2,29 +2,62 @@
 #include "Template.h"
 #include "Sound.h"
 #include <iostream>
-#include "..\eNotifManager.h"
-#include "..\plugin\ScarfaceMenu.h"
+#include "..\gui\notifications.h"
+#include "..\plugin\Menu.h"
 
 SpawnData::SpawnData()
 {
-	((void(__thiscall*)(SpawnData*))0x604320)(this);
+	static uintptr_t pat = _pattern(PATID_SpawnData_Ctor);
+	if (pat)
+		((void(__thiscall*)(SpawnData*))pat)(this);
 }
 
 int CVManager::CreateVehicle(int type, int object, SpawnData* spawnData, Vector& position, Vector& rotation, float unkReal)
 {
-	return ((int(__thiscall*)(CVManager*, int, int, SpawnData*, Vector&, Vector&, float, int, int, int, int, int, int, int, int, int))0x4EDDF0)
-		(this, type, object, spawnData, position, rotation, unkReal, 0, 0, 0, 0, 0, -1, 0, 0, 0);
+	static uintptr_t pat = _pattern(PATID_CVManager_CreateVehicle_Call);
+	if (pat)
+	{
+		static int(__thiscall * funcAddr)(CVManager*, int, int, SpawnData*, Vector&, Vector&, float, int, int, int, int, int, int, int, int, int) = nullptr;
+
+		if (!funcAddr)
+			ReadCall(pat, funcAddr);
+
+		if (funcAddr)
+			return funcAddr(this, type, object, spawnData, position, rotation, unkReal, 0, 0, 0, 0, 0, -1, 0, 0, 0);
+	}
+	return 0;
 }
 
 int CVManager::CreateCharacter(int object, SpawnData* spawnData, Vector& position, Vector& rotation)
 {
-	return ((int(__thiscall*)(CVManager*, int, SpawnData*, Vector&, Vector&, int, int, int, int))0x4ED390)
-		(this, object, spawnData, position, rotation, 1, 0, 0, 0);
+	static uintptr_t pat = _pattern(PATID_CVManager_CreateCharacter_Call);
+	if (pat)
+	{
+		static int(__thiscall * funcAddr)(CVManager*, int, SpawnData*, Vector&, Vector&, int, int, int, int) = nullptr;
+
+		if (!funcAddr)
+			ReadCall(pat, funcAddr);
+
+		if (funcAddr)
+			return funcAddr(this, object, spawnData, position, rotation, 1, 0, 0, 0);
+	}
+	return 0;
 }
 
 CVManager* CVManager::GetInstance()
 {
-	return *(CVManager**)(0x822AF8);
+	static CVManager* pCVManager = nullptr;
+
+	if (pCVManager == nullptr)
+	{
+		static uintptr_t pat = _pattern(PATID_CVManager_Instance);
+		if (pat)
+		{
+			unsigned int offset = *(unsigned int*)(pat);
+			pCVManager = *(CVManager**)(offset);
+		}
+	}
+	return pCVManager;
 }
 
 GameSet<CharacterObject>* CVManager::GetCharacters()

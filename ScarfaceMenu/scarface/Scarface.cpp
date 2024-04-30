@@ -4,6 +4,16 @@
 
 void runScript(const char* script)
 {
-	((void(__cdecl*)(const char*, int, int, int, int))0x4922D0)(script,0,0,0,-1);
+	static uintptr_t pat = _pattern(PATID_runScript_Call);
+	if (pat)
+	{
+		static void (__cdecl * funcAddr)(const char*, int, int, int, int) = nullptr;
+
+		if (!funcAddr)
+			ReadCall(pat, funcAddr);
+
+		if (funcAddr)
+			funcAddr(script, 0, 0, 0, -1);
+	}
 }
 

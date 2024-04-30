@@ -1,20 +1,19 @@
 #include "Camera.h"
-#include "..\plugin\ScarfaceMenu.h"
-#include <iostream>
+#include "..\plugin\Menu.h"
+
 Camera* TheCamera;
-void Camera::SetPosition(Vector* pos)
+
+void Camera::SetPositionHooked(Vector* pos)
 {
 	TheCamera = this;
+
 	if (TheMenu->m_bCustomCameraFOV)
 		SetFOV(TheMenu->camFov);
 
 	if (!TheMenu->m_bCustomCameraPos || TheMenu->fps.enabled)
 	{
 		if (!TheMenu->m_bCustomCameraPos)
-		{
 			TheMenu->camPos = *pos;
-			((void(__thiscall*)(Camera*, Vector*))0x561640)(this, pos);
-		}
 
 		if (TheMenu->fps.enabled)
 		{
@@ -27,34 +26,56 @@ void Camera::SetPosition(Vector* pos)
 				fpView.Y += TheMenu->fps.YAdjust;
 
 				fpView += viewMatrix.GetForward() * TheMenu->fps.ZAdjust;
-
 				fpView += viewMatrix.GetRight() * TheMenu->fps.XAdjust;
+
 				TheMenu->camPos = fpView;
-				((void(__thiscall*)(Camera*, Vector*))0x561640)(this, &fpView);
+				*pos = fpView;
 			}
 		}
 
 	}
 	else
 	{
-		((void(__thiscall*)(Camera*, Vector*))0x561640)(this, &TheMenu->camPos);
+		*pos = TheMenu->camPos;
 	}
 
+	SetPosition(pos);
+}
+
+void Camera::SetPosition(Vector* pos)
+{
+	*(Vector*)(this + 100) = *pos;
+	(*(void(__thiscall**)(int, int))(**(int**)(this + 132) + 100))(*(int*)(this + 132), (int)this + 52);
+
+	//static uintptr_t pat = _pattern(PATID_Camera_SetPosition);
+	//if (pat)
+	//	((void(__thiscall*)(Camera*, Vector*))pat)(this, pos);
 }
 
 void Camera::SetFOV(float FOV)
 {
-	((void(__thiscall*)(Camera*, float))0x5616E0)(this, FOV);
+	static uintptr_t pat = _pattern(PATID_Camera_SetFOV);
+	if (pat)
+		((void(__thiscall*)(Camera*, float))pat)(this, FOV);
 }
 
-void Camera::sub_69EA90(Matrix* data)
+void Camera::UnknownCollision()
 {
+	static uintptr_t pat = _pattern(PATID_Camera_CollisionFunction);
+
 	// seems to be some collision thing? no idea
 	if (TheMenu->m_bFreeCam)
 	{
-		data->M[3][0] = TheMenu->camPos.X;
-		data->M[3][1] = TheMenu->camPos.Y;
-		data->M[3][2] = TheMenu->camPos.Z;
+		Matrix* mat = (Matrix*)(this);
+		mat->M[3][0] = TheMenu->camPos.X;
+		mat->M[3][1] = TheMenu->camPos.Y;
+		mat->M[3][2] = TheMenu->camPos.Z;
+
+		Matrix* mat2 = (Matrix*)((int)this + 64);
+		mat2->M[3][0] = TheMenu->camPos.X;
+		mat2->M[3][1] = TheMenu->camPos.Y;
+		mat2->M[3][2] = TheMenu->camPos.Z;
 	}
-	((void(__thiscall*)(Camera*, void*))0x69EA90)(this, data);
+	if (pat)
+		((void(__thiscall*)(Camera*))pat)(this);
 }

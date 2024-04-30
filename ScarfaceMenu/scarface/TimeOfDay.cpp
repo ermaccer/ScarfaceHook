@@ -1,18 +1,51 @@
 #include "TimeOfDay.h"
-TODObject* TODObject::TOD;
 
 void TODObject::SetTime(int hour, int minute)
 {
-	((void(__thiscall*)(TODObject*, int, int, int))0x5EC8D0)(this, hour, minute, 0);
+	static uintptr_t pat = _pattern(PATID_TODObject_SetTime_Call);
+	if (pat)
+	{
+		static void(__thiscall * funcAddr)(TODObject*, int, int, int) = nullptr;
+
+		if (!funcAddr)
+			ReadCall(pat, funcAddr);
+
+		eLog::Message(__FUNCTION__, "%p %p", funcAddr, pat);
+
+		if (funcAddr)
+			return funcAddr(this, hour, minute, 0);
+	}
 }
 
 void TODObject::EnableRain(bool status)
 {
-	((void(__thiscall*)(TODObject*, bool))0x5EC880)(this, status);
+	static uintptr_t pat = _pattern(PATID_TODObject_EnableRain_Call);
+	if (pat)
+	{
+		static void(__cdecl * funcAddr)(bool) = nullptr;
+
+		if (!funcAddr)
+			ReadCall(pat, funcAddr);
+
+		eLog::Message(__FUNCTION__, "%p %p", funcAddr, pat);
+
+		if (funcAddr)
+			return funcAddr(status);
+	}
 }
 
-TODObject* TODObject::Hook_TODObject_Constructor(int a2, int a3)
+TODObject* GetTODObject()
 {
-	TOD = this;
-	return ((TODObject * (__thiscall*)(TODObject*, int, int))0x5EC9B0)(this, a2, a3);
+	static TODObject* pTODObject = nullptr;
+
+	if (pTODObject == nullptr)
+	{
+		static uintptr_t pat = _pattern(PATID_TODObject_Instance);
+		if (pat)
+		{
+			unsigned int offset = *(unsigned int*)(pat);
+			pTODObject = *(TODObject**)(offset);
+		}
+	}
+	return pTODObject;
 }

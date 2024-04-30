@@ -1,131 +1,128 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include "pch.h"
-#include "eDirectX9Hook.h"
-#include "eDirectInput8Hook.h"
-#include "utils/MemoryMgr.h"
 #include <iostream>
-#include "scarface/Scarface.h"
-#include "plugin/ScarfaceMenu.h"
-#include "SettingsMgr.h"
-#include "hooks.h"
-#include "VersionCheck.h"
+
+#include "gui/dx9hook.h"
+#include "gui/log.h"
+#include "gui/notifications.h"
+
+#include "plugin/Menu.h"
+#include "plugin/Settings.h"
+
+#include "utils/MemoryMgr.h"
+#include "utils/Trampoline.h"
+#include "utils/Patterns.h"
+
+#include <Commctrl.h>
+
+#pragma comment(linker, "/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
+#pragma comment(lib, "Comctl32.lib")
 
 using namespace Memory::VP;
 
-void ImGuiInputWatcher()
+void OnInitializeHook()
 {
-	// scroll wheel handled by dinput8 hook
-	while (true)
 	{
-		if (eDirectX9Hook::ms_bInit)
+		AllocConsole();
+		freopen("CONOUT$", "w", stdout);
+		freopen("CONOUT$", "w", stderr);
+	}
+
+	eLog::Message(__FUNCTION__, "INFO: ScarfaceHook Begin!");
+
+	Notifications->Init();
+	if (_pattern(PATID_Camera_SetPosition))
+		InjectHook(_pattern(PATID_Camera_SetPosition), &Camera::SetPositionHooked, PATCH_JUMP);
+	if (_pattern(PATID_Camera_CollisionFunction_Hook))
+		InjectHook(_pattern(PATID_Camera_CollisionFunction_Hook), &Camera::UnknownCollision, PATCH_CALL);
+	if (_pattern(PATID_DinputCoopLevel))
+		Patch<char>(_pattern(PATID_DinputCoopLevel), 6);
+
+	HANDLE h = 0;
+
+	h = CreateThread(NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(DX9Hook_Thread), 0, NULL, 0);
+
+	if (!(h == nullptr)) CloseHandle(h);
+
+}
+
+bool ValidateGameVersion()
+{
+	PatternSolver::Initialize();
+
+	if (PatternSolver::CheckMissingPatterns())
+	{
+		int nButtonPressed = 0;
+		TASKDIALOGCONFIG config;
+		ZeroMemory(&config, sizeof(TASKDIALOGCONFIG));
+
+		const TASKDIALOG_BUTTON buttons[] = {
+			{ IDOK, L"Launch anyway\nThe game might crash or have missing features!" },
+			{ IDNO, L"Exit" }
+		};
+		config.cbSize = sizeof(config);
+
+		config.dwFlags = TDF_ENABLE_HYPERLINKS | TDF_CAN_BE_MINIMIZED | TDF_USE_COMMAND_LINKS;
+		config.pszMainIcon = TD_WARNING_ICON;
+
+		config.pszWindowTitle = L"Warning";
+		config.pszMainInstruction = L"ScarfaceHook";
+		config.pszContent = L"Could not start ScarfaceHook!\n\n"
+			L"One or more code patterns could not be found, this might indicate"
+			L" that game version is not supported or the plugin has not been updated.\n\n"
+			L"ScarfaceHook officially is only tested with no-cd 1.0.0.1 and 1.0.0.2 US versions.\n"
+			L"Check log for more details.\n";
+
+
+		config.pButtons = buttons;
+		config.cButtons = ARRAYSIZE(buttons);
+
+		if (SUCCEEDED(TaskDialogIndirect(&config, &nButtonPressed, NULL, NULL)))
 		{
-			ImGuiIO& io = ImGui::GetIO();
-			POINT mPos;
-			GetCursorPos(&mPos);
-			ScreenToClient(eDirectX9Hook::ms_hWindow, &mPos);
-			io.MousePos.x = mPos.x;
-			io.MousePos.y = mPos.y;
-			io.MouseDown[0] = (GetAsyncKeyState(VK_LBUTTON) & 0x8000) != 0;
-			io.MouseDown[1] = (GetAsyncKeyState(VK_RBUTTON) & 0x8000) != 0;
-			io.MouseDown[2] = (GetAsyncKeyState(VK_MBUTTON) & 0x8000) != 0;
+			switch (nButtonPressed)
+			{
+			case IDOK:
+				return true;
+				break;
+			case IDNO:
+				exit(0);
+				break;
+			default:
+				break;
+			}
 		}
-		Sleep(1);
+
 	}
+
+	return true;
+
 }
 
-HRESULT __stdcall CoCreateInstanceProxy(LPCTSTR szDllName,REFCLSID rclsid, IUnknown* pUnkOuter, REFIID riid, LPVOID FAR* ppv)
+
+extern "C"
 {
-	HRESULT hr = REGDB_E_KEYMISSING;
-
-	HMODULE hDll = ::LoadLibrary(szDllName);
-	if (hDll == 0)
-		return hr;
-
-	typedef HRESULT(__stdcall* pDllGetClassObject)(REFCLSID rclsid, REFIID riid, LPVOID FAR* ppv);
-	pDllGetClassObject GetClassObject = (pDllGetClassObject)::GetProcAddress(hDll, "DllGetClassObject");
-	if (GetClassObject == 0)
+	__declspec(dllexport) void InitializeASI()
 	{
-		::FreeLibrary(hDll);
-		return hr;
-	}
+		eLog::Initialize();
 
-	IClassFactory* pIFactory;
+		if (ValidateGameVersion())
+		{
+			OnInitializeHook();
+		}
 
-	hr = GetClassObject(rclsid, IID_IClassFactory, (LPVOID*)&pIFactory);
-
-	if (!SUCCEEDED(hr))
-		return hr;
-
-	hr = pIFactory->CreateInstance(pUnkOuter, riid, ppv);
-	pIFactory->Release();
-
-	return hr;
-}
-
-HRESULT WINAPI CoCreateInstance_Hook(IID& rclsid, LPUNKNOWN pUnkOuter, DWORD dwClsContext, REFIID riid, LPVOID* ppv)
-{
-	HRESULT res;
-	if (rclsid == CLSID_DirectInput8)
-	{
-		res = CoCreateInstanceProxy("dinput8.dll", rclsid, pUnkOuter, riid, ppv);
-		eDirectInput8Hook::SetClassInterface(*(int*)(ppv));
-		eDirectInput8Hook::Init();
-		return res;
-
-	}
-	else
-	{
-		res = CoCreateInstance(rclsid, pUnkOuter, dwClsContext, riid, ppv);
-		return res;
 	}
 }
 
-
-void Init()
-{
-	AllocConsole();
-	freopen("CONIN$", "r", stdin);
-	freopen("CONOUT$", "w", stdout);
-	freopen("CONOUT$", "w", stderr);
-
-
-	TheMenu->Init();
-	hooks::Init();
-
-	CreateThread(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(ImGuiInputWatcher), nullptr, 0, nullptr);
-
-	eDirectX9Hook::RegisterHook(0x64B1CA, 0x64B1D3, Method_EndScene);
-	eDirectX9Hook::RegisterHook(0x654922, 0x65492B, Method_Reset);
-
-	if (!SettingsMgr->bUseAlternateMethodToDisableInput)
-		Patch(0x9CE540, CoCreateInstance_Hook);
-}
 
 BOOL WINAPI DllMain(HMODULE hMod, DWORD dwReason, LPVOID lpReserved)
 {
 	switch (dwReason)
 	{
 	case DLL_PROCESS_ATTACH:
-		if (IsExecutableSpecifiedVersion())
-		{
-			Init();
-			eDirectX9Hook::Init();
-			if (!SettingsMgr->bUseAlternateMethodToDisableInput)
-				eDirectInput8Hook::SetModule(hMod);
-		}
-		else
-		{
-			MessageBoxA(0, "Invalid game version!\nScarfaceHook only supports version 1.0.0.2 of the executable.\n\nIt is highly recommended to find a no-cd executable of 1.0.0.2 for best experience.\n\nThe game will now run without changes.", 0, MB_ICONINFORMATION);
-		}
 		break;
 	case DLL_PROCESS_DETACH:
-		if (IsExecutableSpecifiedVersion())
-		{
-			if (!SettingsMgr->bUseAlternateMethodToDisableInput)
-				eDirectInput8Hook::Destroy();
-		}
+		GUIImplementationDX9::Shutdown();
 		break;
 	}
 	return TRUE;
 }
-

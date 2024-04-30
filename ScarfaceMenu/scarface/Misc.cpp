@@ -39,11 +39,6 @@ void setPlayerPosition(Vector pos)
 	runScript(scriptBuff);
 }
 
-void setCamPosition(char* name, Vector pos)
-{
-
-}
-
 void TonyTeleport(Vector pos)
 {
 	sprintf(scriptBuff, "TonyTeleport(\"%f %f %f\");", pos.X, pos.Y, pos.Z);
