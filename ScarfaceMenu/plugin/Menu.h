@@ -4,9 +4,9 @@
 #include "../scarface/Scarface.h"
 #include "../helper/eKeyboardMan.h"
 
-#define SCARFACEHOOK_VERSION "1.4"
+#define SCARFACEHOOK_VERSION "1.5"
 
-#define MAX_TELEPORTS 200
+#define MAX_TELEPORTS 2000
 //#define CLIP_POS
 
 enum eMenuSubMenus {
@@ -44,6 +44,7 @@ public:
 	bool	 m_bForceInvincibility = false;
 	bool	 m_bHighPrioritySpawning = false;	
 	bool     m_bCharacterUseWeapon = false;
+	bool	 m_bCharacterUseClass = false;
 	bool	 m_bInfiniteHealth = false;
 	bool	 m_bInfiniteAmmo = false;
 	bool	 m_bDisableFallDamage = false;
@@ -71,6 +72,7 @@ public:
 	char mission[128] = {};
 	char characterSpawn[128] = {};
 	char characterWeapon[128] = {};
+	char characterClass[128] = {};
 	char teleportName[128] = {};
 	char animName[256] = {};
 

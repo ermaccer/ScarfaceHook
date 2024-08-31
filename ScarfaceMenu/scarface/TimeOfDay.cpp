@@ -10,8 +10,6 @@ void TODObject::SetTime(int hour, int minute)
 		if (!funcAddr)
 			ReadCall(pat, funcAddr);
 
-		eLog::Message(__FUNCTION__, "%p %p", funcAddr, pat);
-
 		if (funcAddr)
 			return funcAddr(this, hour, minute, 0);
 	}
@@ -26,8 +24,6 @@ void TODObject::EnableRain(bool status)
 
 		if (!funcAddr)
 			ReadCall(pat, funcAddr);
-
-		eLog::Message(__FUNCTION__, "%p %p", funcAddr, pat);
 
 		if (funcAddr)
 			return funcAddr(status);

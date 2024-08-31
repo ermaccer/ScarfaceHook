@@ -8,7 +8,7 @@ class SpawnData
 public:
 
 	char* name;
-	char* field_4;
+	char* className;
 	char field_8;
 	char field_9;
 	char field_A;
@@ -41,7 +41,6 @@ class CVManager {
 public:
 	int CreateVehicle(int type, int object, SpawnData* spawnData, Vector& position, Vector& rotation, float unkReal);
 	int CreateCharacter(int object, SpawnData* spawnData, Vector& position, Vector& rotation);
-
 
 	static CVManager* GetInstance();
 

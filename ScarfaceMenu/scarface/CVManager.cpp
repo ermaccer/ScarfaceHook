@@ -68,14 +68,12 @@ GameSet<CharacterObject>* CVManager::GetCharacters()
 
 void SpawnCar(char* name, Vector* position)
 {
-	// get template
-
 	Template* templateInfo = GetTemplateData(name, 1);
 	if (templateInfo)
 	{
 		SpawnData data;
 		data.name = "CreatedCar";
-		data.field_4 = "";
+		data.className = "";
 		data.templateName = templateInfo->name;
 
 		int priority = 1;
@@ -117,14 +115,23 @@ void SpawnCar(char* name, Vector* position)
 }
 
 void SpawnCharacter(char* name, Vector* position)
-{// get template
-
+{
 	Template* templateInfo = GetTemplateData(name, 0);
 	if (templateInfo)
 	{
+		static int gCharacterCounter = 0;
+		static char gCharacterName[256] = {};
+
+		snprintf(gCharacterName, sizeof(gCharacterName), "CreatedChar%03d", gCharacterCounter);
+
 		SpawnData data;
-		data.name = "CreatedChar";
-		data.field_4 = "";
+		data.name = gCharacterName;
+
+		if (TheMenu->m_bCharacterUseClass)
+			data.className = TheMenu->characterClass;
+		else
+			data.className = "";
+
 		data.templateName = templateInfo->name;
 
 		if (TheMenu->m_bCharacterUseWeapon)
@@ -149,6 +156,9 @@ void SpawnCharacter(char* name, Vector* position)
 					Notifications->PushNotification("Character %s [0x%X] created with %s!", name, ptr, data.weaponTemplateName);
 				else
 					Notifications->PushNotification("Character %s [0x%X] created!", name, ptr);
+
+				gCharacterCounter++;
+
 				templateInfo->Unload(priority);
 			}
 			else

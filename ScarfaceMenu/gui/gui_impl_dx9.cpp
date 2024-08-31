@@ -150,6 +150,8 @@ LRESULT WINAPI GUIImplementationDX9::WndProc(const HWND hWnd, UINT uMsg, WPARAM 
 			TheMenu->OnToggleFPS();
 		if (wParam == SettingsMgr->iHookSlowMoKey)
 			TheMenu->OnToggleSlowMotion();
+		if (wParam == SettingsMgr->iToggleFreeCameraKey)
+			TheMenu->OnToggleFreeCamera();
 		break;
 	default:
 		break;

@@ -7,37 +7,32 @@ void Camera::SetPositionHooked(Vector* pos)
 {
 	TheCamera = this;
 
-	if (TheMenu->m_bCustomCameraFOV)
+	if (TheMenu->m_bCustomCameraFOV || TheMenu->m_bFreeCam)
 		SetFOV(TheMenu->camFov);
 
-	if (!TheMenu->m_bCustomCameraPos || TheMenu->fps.enabled)
-	{
-		if (!TheMenu->m_bCustomCameraPos)
-			TheMenu->camPos = *pos;
 
-		if (TheMenu->fps.enabled)
+	if (TheMenu->fps.enabled)
+	{
+		CharacterObject* plr = GetMainCharacter();
+		if (plr)
 		{
-			CharacterObject* plr = GetMainCharacter();
-			if (plr)
-			{
-				Vector fpView = {};
-				Matrix viewMatrix = plr->GetMatrix();
-				fpView = *plr->GetBonePosition(BONE_HEAD);
-				fpView.Y += TheMenu->fps.YAdjust;
+			Vector fpView = {};
+			Matrix viewMatrix = plr->GetMatrix();
+			fpView = *plr->GetBonePosition(BONE_HEAD);
+			fpView.Y += TheMenu->fps.YAdjust;
 
-				fpView += viewMatrix.GetForward() * TheMenu->fps.ZAdjust;
-				fpView += viewMatrix.GetRight() * TheMenu->fps.XAdjust;
+			fpView += viewMatrix.GetForward() * TheMenu->fps.ZAdjust;
+			fpView += viewMatrix.GetRight() * TheMenu->fps.XAdjust;
 
-				TheMenu->camPos = fpView;
-				*pos = fpView;
-			}
+			TheMenu->camPos = fpView;
+			*pos = fpView;
 		}
+	}
 
-	}
-	else
-	{
+	if (TheMenu->m_bCustomCameraPos || TheMenu->m_bFreeCam)
 		*pos = TheMenu->camPos;
-	}
+	else
+		TheMenu->camPos = *pos;
 
 	SetPosition(pos);
 }
@@ -46,10 +41,6 @@ void Camera::SetPosition(Vector* pos)
 {
 	*(Vector*)(this + 100) = *pos;
 	(*(void(__thiscall**)(int, int))(**(int**)(this + 132) + 100))(*(int*)(this + 132), (int)this + 52);
-
-	//static uintptr_t pat = _pattern(PATID_Camera_SetPosition);
-	//if (pat)
-	//	((void(__thiscall*)(Camera*, Vector*))pat)(this, pos);
 }
 
 void Camera::SetFOV(float FOV)

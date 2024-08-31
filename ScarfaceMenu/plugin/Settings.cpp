@@ -11,6 +11,9 @@ eSettingsManager::eSettingsManager()
 	CIniReader user("scfhook_user.ini");
 
 	// user first
+	bEnableConsoleWindow = ini.ReadBoolean("Settings", "bEnableConsoleWindow", true);
+
+
 	iHookMenuOpenKey = user.ReadInteger("Settings", "iHookMenuOpenKey", -1);
 	if (iHookMenuOpenKey == -1) iHookMenuOpenKey = ini.ReadInteger("Settings", "iHookMenuOpenKey", VK_F1);
 
@@ -86,6 +89,9 @@ void eSettingsManager::SaveSettings()
 	user.WriteFloat("FPSettings", "xadjust", TheMenu->fps.XAdjust);
 	user.WriteFloat("FPSettings", "yadjust", TheMenu->fps.YAdjust);
 	user.WriteFloat("FPSettings", "zadjust", TheMenu->fps.ZAdjust);
+
+	CIniReader ini("ScarfaceHook.ini");
+	ini.WriteBoolean("Settings", "bEnableConsoleWindow", bEnableConsoleWindow);
 }
 
 void eSettingsManager::ResetKeys()

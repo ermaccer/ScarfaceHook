@@ -3,9 +3,8 @@
 class eSettingsManager {
 public:
 	eSettingsManager();
-	
-	bool bUseAlternateMethodToDisableInput;
-	
+	bool bEnableConsoleWindow;
+
 	int iHookMenuOpenKey;
 	int iHookSlowMoKey;
 

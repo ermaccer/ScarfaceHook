@@ -22,6 +22,7 @@ using namespace Memory::VP;
 
 void OnInitializeHook()
 {
+	if (SettingsMgr->bEnableConsoleWindow)
 	{
 		AllocConsole();
 		freopen("CONOUT$", "w", stdout);
@@ -43,7 +44,6 @@ void OnInitializeHook()
 	h = CreateThread(NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(DX9Hook_Thread), 0, NULL, 0);
 
 	if (!(h == nullptr)) CloseHandle(h);
-
 }
 
 bool ValidateGameVersion()
@@ -91,11 +91,8 @@ bool ValidateGameVersion()
 				break;
 			}
 		}
-
 	}
-
 	return true;
-
 }
 
 

@@ -191,7 +191,6 @@ const char* szWeapons[] = {
 	"WeaponTemplateM240",
 };
 
-
 const char* szCharacters[] = {
 	"MCP_ArmyTony",
 	"MCP_Assassin",
@@ -801,7 +800,6 @@ const char* szPeds[] = {
 	"CharTemp_Yup_Male02",
 };
 
-
 const char* szAnimations[] = {
 	"A80_Death",
 	"Arcade_State",
@@ -1011,6 +1009,14 @@ const char* szAnimations[] = {
 	"taunt",
 };
 
+const char* szPedClasses[] = {
+	"DWHenchman",
+	"Enemy",
+	"Civilian",
+	"Cop",
+	"DialogueCharacter",
+	"DwStreetDealer",
+};
 
 struct debugMenuPair {
 	char* name;
@@ -1099,7 +1105,7 @@ ScarfaceMenu::ScarfaceMenu()
 	sprintf(mission, szMissions[0]);
 	sprintf(characterSpawn, szPeds[0]);
 	sprintf(animName, szAnimations[128]);
-
+	sprintf(characterClass, szPedClasses[0]);
 	m_fSpeed = 1.0f;
 
 	LoadLocationFile();
@@ -1135,6 +1141,8 @@ void ScarfaceMenu::OnToggleFreeCamera()
 {
 	if (m_bIsActive)
 		return;
+
+	m_bFreeCam ^= 1;
 }
 
 void ScarfaceMenu::OnToggleHUD()
@@ -1571,7 +1579,52 @@ void ScarfaceMenu::DrawSpawnerTab()
 			}
 
 		}
+
 		ImGui::EndChild();
+		ImGui::Separator();
+
+		ImGui::_Checkbox("Set Character Class", &m_bCharacterUseClass);
+		ImGui::SameLine();
+		ShowHelpMarker("Character class defines spawned character behaviour, bodyguard, enemy or cop for example.");
+
+		ImGui::PushItemWidth(-FLT_MIN);
+		if (ImGui::BeginCombo("##classList", characterClass))
+		{
+			for (int n = 0; n < IM_ARRAYSIZE(szPedClasses); n++)
+			{
+				bool is_selected = (characterClass == szPedClasses[n]);
+				if (ImGui::Selectable(szPedClasses[n], is_selected))
+					sprintf(characterClass, szPedClasses[n]);
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+
+			}
+			ImGui::EndCombo();
+		}
+		ImGui::PopItemWidth();
+
+		ImGui::_Checkbox("Set Character Weapon", &m_bCharacterUseWeapon);
+		ImGui::SameLine();
+		ShowHelpMarker("If not defined, character will spawn with a random weapon.");
+
+		ImGui::PushItemWidth(-FLT_MIN);
+		if (ImGui::BeginCombo("##chrWepList", characterWeapon))
+		{
+			for (int n = 0; n < IM_ARRAYSIZE(szWeapons); n++)
+			{
+				bool is_selected = (characterWeapon == szWeapons[n]);
+				if (ImGui::Selectable(szWeapons[n], is_selected))
+					sprintf(characterWeapon, szWeapons[n]);
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+
+			}
+			ImGui::EndCombo();
+		}
+		ImGui::PopItemWidth();
+
+		ImGui::Separator();
+
 		if (ImGui::Button("Create##character", { -FLT_MIN, 0 }))
 		{
 			Vector pos = GetMainCharacter()->GetLocation();
@@ -1599,9 +1652,6 @@ void ScarfaceMenu::DrawCameraTab()
 
 	if (m_bFreeCam)
 	{
-		if (!m_bCustomCameraPos || !m_bCustomCameraFOV)
-			ImGui::TextColored(ImVec4(1.f, 0.3f, 0.3f, 1.f), "Check rest of the Set Camera options!");
-
 		ImGui::InputFloat("Free Camera Speed", &m_fFreeCamSpeed);
 	}
 
@@ -1648,7 +1698,6 @@ void ScarfaceMenu::DrawWorldTab()
 		GetTODObject()->EnableRain(false);
 	if (ImGui::Button("Enable Rain", { -FLT_MIN, 0 }))
 		GetTODObject()->EnableRain(true);
-	ImGui::Separator();
 }
 
 void ScarfaceMenu::DrawSpeedTab()
@@ -1885,11 +1934,13 @@ void ScarfaceMenu::DrawSettings()
 	static int settingID = 0;
 	static const char* settingNames[] = {
 		"Menu",
+		"INI",
 		"Keys"
 	};
 
 	enum eSettings {
 		MENU,
+		INI,
 		KEYS,
 	};
 
@@ -1917,6 +1968,10 @@ void ScarfaceMenu::DrawSettings()
 		ImGui::PushItemWidth(-FLT_MIN);
 		ImGui::InputFloat("##", &SettingsMgr->fMenuScale);
 		ImGui::PopItemWidth();
+		break;
+	case INI:
+		ImGui::TextWrapped("These settings control ScarfaceHook.ini options. Any changes require game restart to take effect.");
+		ImGui::Checkbox("Debug Console", &SettingsMgr->bEnableConsoleWindow);
 		break;
 	case KEYS:
 		if (m_bPressingKey)
@@ -1949,6 +2004,7 @@ void ScarfaceMenu::DrawSettings()
 
 		ImGui::LabelText("##", "Misc");
 		ImGui::Separator();
+		KeyBind(&SettingsMgr->iToggleFreeCameraKey, "Toggle Free Camera", "fcam");
 		KeyBind(&SettingsMgr->iToggleHUDKey, "Toggle HUD", "thud");
 		KeyBind(&SettingsMgr->iToggleFirstPersonKey, "First Person Mode", "fp_toggle");
 		KeyBind(&SettingsMgr->iPlayLastAnimKey, "Play Last Animation", "last_anim");
@@ -2004,6 +2060,9 @@ void ScarfaceMenu::KeyBind(int* var, char* bindName, char* name)
 
 void ScarfaceMenu::Process()
 {
+
+	CharacterObject* plr = GetMainCharacter();
+
 	{
 		uintptr_t pat = _pattern(PATID_DisableMouse);
 		if (pat)
@@ -2019,7 +2078,7 @@ void ScarfaceMenu::Process()
 		uintptr_t pat = _pattern(PATID_gTonyInvincible);
 		if (pat)
 		{
-			bool& gTonyIsInvincible = *(bool*)(pat);
+			bool& gTonyIsInvincible = *(bool*)(*(int*)pat);
 			gTonyIsInvincible = m_bForceInvincibility;
 		}
 	}
@@ -2027,7 +2086,7 @@ void ScarfaceMenu::Process()
 
 
 
-	if (CharacterObject* plr = GetMainCharacter())
+	if (plr)
 	{
 		if (m_bInfiniteAmmo)
 			plr->InfiniteAmmo(m_bInfiniteAmmo);
@@ -2035,6 +2094,8 @@ void ScarfaceMenu::Process()
 		if (m_bForceInvincibility)
 			plr->SetHealth(1000.0f);
 	}
+
+
 
 	float delta = GUIImplementationDX9::GetDeltaTime();
 
