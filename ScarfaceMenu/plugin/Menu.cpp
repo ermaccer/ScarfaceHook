@@ -1655,8 +1655,6 @@ void ScarfaceMenu::DrawCameraTab()
 		ImGui::InputFloat("Free Camera Speed", &m_fFreeCamSpeed);
 	}
 
-
-
 	ImGui::Separator();
 	ImGui::TextWrapped("First Person");
 	ImGui::_Checkbox("Enable##fp", &fps.enabled);
@@ -1718,7 +1716,6 @@ void ScarfaceMenu::DrawSpeedTab()
 		runScript("PopTimeScale();");
 		m_fSpeed = 1.0f;
 	}
-	ImGui::Separator();
 }
 
 void ScarfaceMenu::DrawTeleporterTab()
@@ -1795,7 +1792,6 @@ void ScarfaceMenu::DrawTeleporterTab()
 
 void ScarfaceMenu::DrawMiscTab()
 {
-
 	if (ImGui::Button("Hide HUD"))
 		runScript("HUD_Hide();");
 	ImGui::SameLine();
@@ -1884,17 +1880,10 @@ void ScarfaceMenu::DrawMiscTab()
 	ImGui::Text("0x%X", hash);
 	ImGui::Text("%p chr", GetMainCharacter());
 #endif // _DEBUG
-
-
 }
 
 void ScarfaceMenu::DrawDebugTab()
 {
-	if (!GetModuleHandle("Scarface.DebugMenu.asi"))
-	{
-		ImGui::TextWrapped("Debug Menu unlock asi is required to call original debug functions.");
-		return;
-	}
 	ImGui::TextWrapped("Original debug menu options.");
 	ImGui::Separator();
 	ImGui::PushItemWidth(-FLT_MIN);
@@ -2060,9 +2049,7 @@ void ScarfaceMenu::KeyBind(int* var, char* bindName, char* name)
 
 void ScarfaceMenu::Process()
 {
-
 	CharacterObject* plr = GetMainCharacter();
-
 	{
 		uintptr_t pat = _pattern(PATID_DisableMouse);
 		if (pat)
@@ -2083,9 +2070,6 @@ void ScarfaceMenu::Process()
 		}
 	}
 
-
-
-
 	if (plr)
 	{
 		if (m_bInfiniteAmmo)
@@ -2094,8 +2078,6 @@ void ScarfaceMenu::Process()
 		if (m_bForceInvincibility)
 			plr->SetHealth(1000.0f);
 	}
-
-
 
 	float delta = GUIImplementationDX9::GetDeltaTime();
 
