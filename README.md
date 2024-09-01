@@ -17,7 +17,7 @@ the game in first person perspective!
 - Animation player
 - Values Control (Gang Heat, Cop Heat etc.)
 - Vehicle Spawner
-- Character Spawner
+- Character Spawner (Can create bodyguards or enemies too)
 - Teleporter (with preset locations)
 - Gamespeed Control
 - Free Camera (FOV customization too)
